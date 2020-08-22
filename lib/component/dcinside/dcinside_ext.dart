@@ -49,6 +49,11 @@ class DCInsideExtractor extends BoardExtractor {
   }
 
   @override
+  String extractor() {
+    return 'dcinside';
+  }
+
+  @override
   String name() {
     return '디시인사이드';
   }
@@ -65,7 +70,8 @@ class DCInsideExtractor extends BoardExtractor {
     var url = board.url +
         '?' +
         qurey.entries
-            .map((e) => '${e.key}=${Uri.encodeQueryComponent(e.value)}')
+            .map((e) =>
+                '${e.key}=${Uri.encodeQueryComponent(e.value.toString())}')
             .join('&');
 
     var html = (await http.get(
@@ -97,13 +103,13 @@ class DCInsideExtractor extends BoardExtractor {
       BoardInfo(
         url: 'https://gall.dcinside.com/board/lists',
         name: '이슈줌 갤러리',
-        extrainfo: {'id': 'issuezoom', 'exception_mode': 'recommend'},
+        extrainfo: {'id': 'issuezoom'},
         extractor: 'dcinside',
       ),
       BoardInfo(
         url: 'https://gall.dcinside.com/board/lists',
         name: '초개념 갤러리',
-        extrainfo: {'id': 'superidea', 'exception_mode': 'recommend'},
+        extrainfo: {'id': 'superidea'},
         extractor: 'dcinside',
       ),
       BoardInfo(

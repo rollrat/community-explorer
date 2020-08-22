@@ -1,7 +1,9 @@
 // This source code is a part of Project Violet.
 // Copyright (C) 2020. rollrat. Licensed under the MIT License.
 
+import 'package:communityexplorer/component/board_manager.dart';
 import 'package:communityexplorer/component/interface.dart';
+import 'package:communityexplorer/pages/article_widget.dart';
 import 'package:communityexplorer/pages/left_page.dart';
 import 'package:communityexplorer/pages/right_page.dart';
 import 'package:communityexplorer/settings/settings.dart';
@@ -21,24 +23,55 @@ class _MainPageState extends State<MainPage> {
 
   List<ArticleInfo> articles;
 
-  List<String> items = ["1", "2", "3", "4", "5", "6", "7", "8"];
+  // List<String> items = ["1", "2", "3", "4", "5", "6", "7", "8"];
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    Future.delayed(Duration(milliseconds: 100)).then((value) async {
+      try {
+        articles = await BoardManager.instance.init();
+      } catch (e, st) {
+        print(e);
+        print(st);
+      }
+      // articles.forEach((element) {
+      // print(element.title);
+      // });
+      setState(() {});
+    });
+  }
+
   void _onRefresh() async {
     // monitor network fetch
-    await Future.delayed(Duration(milliseconds: 1000));
+    // await Future.delayed(Duration(milliseconds: 1000));
     // if failed,use refreshFailed()
+    try {
+      articles = await BoardManager.instance.refresh();
+    } catch (e) {
+      print(e);
+    }
     _refreshController.refreshCompleted();
+    setState(() {});
   }
 
   void _onLoading() async {
     // monitor network fetch
-    await Future.delayed(Duration(milliseconds: 1000));
+    // await Future.delayed(Duration(milliseconds: 1000));
     // if failed,use loadFailed(),if no data return,use LoadNodata()
-    items.add((items.length + 1).toString());
+    // items.add((items.length + 1).toString());
+    try {
+      articles = await BoardManager.instance.next();
+    } catch (e) {
+      print(e);
+    }
     if (mounted) setState(() {});
     _refreshController.loadComplete();
+    setState(() {});
   }
 
   @override
@@ -94,45 +127,46 @@ class _MainPageState extends State<MainPage> {
       //  A Scaffold is generally used but you are free to use other widgets
       // Note: use "automaticallyImplyLeading: false" if you do not personalize "leading" of Bar
       scaffold: Scaffold(
-        body: Padding(
-          padding: EdgeInsets.only(top: statusBarHeight),
-          child: SmartRefresher(
-            enablePullDown: true,
-            enablePullUp: true,
-            header: ClassicHeader(
-              // decoration: BoxDecoration(color: Colors.white),
-              refreshingText: '가져오는 중...',
-              completeText: '',
-              idleText: '새로고침하려면 당기세요',
-              releaseText: '놓아서 새로고침',
-              completeDuration: Duration(milliseconds: 0),
-              completeIcon: null,
-              // refreshStyle: RefreshStyle,
-            ),
-            footer: ClassicFooter(
-              loadingText: '가져오는 중...',
-              idleText: '더보기',
-              noDataText: '데이터가 없습니다 :(',
-              canLoadingText: '',
-              failedText: '실패 :(',
-            ),
-            controller: _refreshController,
-            onRefresh: _onRefresh,
-            onLoading: _onLoading,
-            child: ListView.builder(
-              itemBuilder: (c, i) => Card(child: Center(child: Text(items[i]))),
-              itemExtent: 100.0,
-              itemCount: items.length,
-            ),
-          ),
-        ),
-        // Container(
-        //   padding: EdgeInsets.only(top: statusBarHeight),
-        //   child: SingleChildScrollView(
-        //     physics: BouncingScrollPhysics(),
-        //     // child: ListView(),
-        //   ),
-        // ),
+        body: articles == null
+            ? Container()
+            : Padding(
+                padding: EdgeInsets.only(top: statusBarHeight),
+                child: SmartRefresher(
+                  enablePullDown: true,
+                  enablePullUp: true,
+                  header: ClassicHeader(
+                    // decoration: BoxDecoration(color: Colors.white),
+                    refreshingText: '가져오는 중...',
+                    completeText: '',
+                    idleText: '새로고침하려면 당기세요',
+                    releaseText: '놓아서 새로고침',
+                    completeDuration: Duration(milliseconds: 0),
+                    completeIcon: null,
+                  ),
+                  footer: ClassicFooter(
+                    loadingText: '가져오는 중...',
+                    idleText: '더보기',
+                    noDataText: '데이터가 없습니다 :(',
+                    canLoadingText: '',
+                    failedText: '실패 :(',
+                  ),
+                  controller: _refreshController,
+                  onRefresh: _onRefresh,
+                  onLoading: _onLoading,
+                  child: ListView.separated(
+                    itemBuilder: (c, i) => ArticleWidget(
+                      articleInfo: articles[i],
+                    ),
+                    // itemExtent: 50.0,
+                    itemCount: articles.length,
+                    separatorBuilder: (context, index) {
+                      return Divider(
+                        height: 2,
+                      );
+                    },
+                  ),
+                ),
+              ),
       ),
     );
   }

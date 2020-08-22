@@ -50,6 +50,11 @@ class HuvkrExtractor extends BoardExtractor {
   }
 
   @override
+  String extractor() {
+    return 'huvkr';
+  }
+
+  @override
   String name() {
     return '웃긴대학';
   }
@@ -65,7 +70,8 @@ class HuvkrExtractor extends BoardExtractor {
     var url = board.url +
         '?' +
         qurey.entries
-            .map((e) => '${e.key}=${Uri.encodeQueryComponent(e.value)}')
+            .map((e) =>
+                '${e.key}=${Uri.encodeQueryComponent(e.value.toString())}')
             .join('&');
 
     var html = await CharsetConverter.decode(

@@ -7,6 +7,7 @@ abstract class BoardExtractor {
   bool acceptURL(String url);
   Future<String> tidyURL(String url);
   String fav();
+  String extractor();
   String name();
   Color color();
   Future<PageInfo> next(BoardInfo board, int offset);
@@ -51,6 +52,8 @@ class ArticleInfo {
   final String nickname;
   final String preface;
   final String info; // Id, No etc...
+  bool isLastArticle = false; // on page
+  PageInfo page;
 
   ArticleInfo({
     this.comment,

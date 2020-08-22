@@ -15,27 +15,32 @@ class DCInsideParser {
       if (int.tryParse(no) == null) continue;
 
       var type = tr
-          .querySelector('td:nth-of-type(2) a em')
+          .querySelector('td:nth-of-type(2) > a > em')
           .attributes['class']
           .split(' ')[1];
-      var title = tr.querySelector('td:nth-of-type(2) a').text.trim();
+      var title = tr.querySelector('td:nth-of-type(2) > a').text.trim();
       int reply = 0;
       try {
         reply = int.parse(tr
-            .querySelector('span.replay_num')
+            .querySelector('span.reply_num')
             .text
             .replaceAll('[', '')
             .replaceAll(']', '')
+            .split('/')
+            .first
             .trim());
-      } catch (e) {}
-      var nick = tr.querySelector('td:nth-of-type(3)').attributes['data-nick'];
+      } catch (e) {
+        print(e);
+      }
+      var nick =
+          tr.querySelector('td:nth-of-type(3)').attributes['data-nick'] ?? '';
       var uid = tr.querySelector('td:nth-of-type(3)').attributes['data-uid'];
       var ip = tr.querySelector('td:nth-of-type(3)').attributes['data-ip'];
 
-      if (ip != null) {
+      if (ip != null && ip != '') {
         nick += ' ($ip)';
-      } else {
-        uid += ' ($uid)';
+      } else if (uid != null && uid != '') {
+        nick += ' ($uid)';
       }
 
       var date = DateTime.parse(
@@ -73,28 +78,36 @@ class DCInsideParser {
       if (int.tryParse(no) == null) continue;
 
       var classify = tr.querySelector('td:nth-of-type(2)').text.trim();
+
+      if (classify == '공지' || classify == '설문') continue;
+
       var type = tr
-          .querySelector('td:nth-of-type(3) a em')
+          .querySelector('td:nth-of-type(3) > a > em')
           .attributes['class']
           .split(' ')[1];
-      var title = tr.querySelector('td:nth-of-type(3) a').text.trim();
+      var title = tr.querySelector('td:nth-of-type(3) > a').text.trim();
       int reply = 0;
       try {
         reply = int.parse(tr
-            .querySelector('span.replay_num')
+            .querySelector('span.reply_num')
             .text
             .replaceAll('[', '')
             .replaceAll(']', '')
+            .split('/')
+            .first
             .trim());
-      } catch (e) {}
-      var nick = tr.querySelector('td:nth-of-type(4)').attributes['data-nick'];
+      } catch (e) {
+        print(e);
+      }
+      var nick =
+          tr.querySelector('td:nth-of-type(4)').attributes['data-nick'] ?? '';
       var uid = tr.querySelector('td:nth-of-type(4)').attributes['data-uid'];
       var ip = tr.querySelector('td:nth-of-type(4)').attributes['data-ip'];
 
-      if (ip != null) {
+      if (ip != null && ip != '') {
         nick += ' ($ip)';
-      } else {
-        uid += ' ($uid)';
+      } else if (uid != null && uid != '') {
+        nick += ' ($uid)';
       }
 
       var date = DateTime.parse(

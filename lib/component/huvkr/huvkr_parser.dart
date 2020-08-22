@@ -100,9 +100,36 @@ class HuvkrParser {
         upvote: up,
         downvote: down,
         url: url,
+        info: url.split('number=').last.split('&').first,
       ));
     }
 
     return result;
   }
+
+  /*
+  public List<Pattern> Extract(string html)
+  {
+      HtmlDocument document = new HtmlDocument();
+      document.LoadHtml(html);
+      var result = new List<Pattern>();
+      var root_node = document.DocumentNode;
+      for (int i = 1; ; i++)
+      {
+          var node = root_node.SelectSingleNode($"/html[1]/body[1]/div[1]/div[6]/ul[1]/a[{1+i*1}]/li[1]/table[1]/tr[1]/td[2]");
+          if (node == null) break;
+          var pattern = new Pattern();
+          pattern.title = node.SelectSingleNode("./dd[1]/span[2]/span[1]").InnerText;
+          pattern.upvote = node.SelectSingleNode("./span[1]/span[1]").InnerText;
+          pattern.downvote = node.SelectSingleNode("./span[1]/span[2]").InnerText;
+          pattern.comment = node.SelectSingleNode("./span[1]/span[3]").InnerText;
+          pattern.view = node.SelectSingleNode("./span[1]/span[4]").InnerText;
+          pattern.writetime = node.SelectSingleNode("./div[1]/span[1]").InnerText;
+          pattern.nick = node.SelectSingleNode("./div[1]/span[3]/span[1]/span[1]").InnerText;
+          result.Add(pattern);
+      }
+      return result;
+  }
+  */
+  static List<ArticleInfo> parseBoardMobile(String html) {}
 }

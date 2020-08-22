@@ -969,7 +969,7 @@ class InHeadPhase extends Phase {
       case 'title':
         startTagTitle(token);
         return null;
-      case 'noscript':
+      // case 'noscript':
       case 'noframes':
       case 'style':
         startTagNoScriptNoFramesStyle(token);
@@ -1362,7 +1362,7 @@ class InBodyPhase extends Phase {
         startTagIFrame(token);
         return null;
       case 'noembed':
-      case 'noscript':
+        // case 'noscript':
         startTagRawtext(token);
         return null;
       case 'select':
