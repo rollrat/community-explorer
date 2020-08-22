@@ -5,6 +5,7 @@ import 'dart:ui';
 
 import 'package:charset_converter/charset_converter.dart';
 import 'package:communityexplorer/component/arcalive/arcalive_parser.dart';
+import 'package:communityexplorer/component/clien/clien_parser.dart';
 import 'package:communityexplorer/component/dcinside/dcinside_parser.dart';
 import 'package:communityexplorer/component/huvkr/huvkr_parser.dart';
 import 'package:communityexplorer/component/interface.dart';
@@ -12,11 +13,11 @@ import 'package:communityexplorer/network/wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class ArcaLiveExtractor extends BoardExtractor {
+class ClienExtractor extends BoardExtractor {
   RegExp urlMatcher;
 
-  ArcaLiveExtractor() {
-    urlMatcher = RegExp(r'^https?://.*?arca.live/b/[^/]+$');
+  ClienExtractor() {
+    urlMatcher = RegExp(r'^https://www.clien.net/service/(board|group)/.*?$');
   }
 
   @override
@@ -32,28 +33,31 @@ class ArcaLiveExtractor extends BoardExtractor {
 
   @override
   Color color() {
-    return Color(0xFF373a3c);
+    return Color(0xFF232F3E);
   }
 
   @override
   String fav() {
-    return 'https://arca.live/static/apple-icon.png';
+    return 'https://www.clien.net/service/image/icon180x180.png';
   }
 
   @override
   String extractor() {
-    return 'arcalive';
+    return 'clien';
   }
 
   @override
   String name() {
-    return '아카라이브';
+    return '클리앙';
   }
 
   @override
   Future<PageInfo> next(BoardInfo board, int offset) async {
     // URL
-    // 1. https://arca.live/b/tullius?mode=best&p=2
+    // 1. https://www.clien.net/service/group/clien_all?&od=T33
+    // 2. https://www.clien.net/service/board/park
+    // 3. https://www.clien.net/service/board/image
+    // 4. https://www.clien.net/service/board/kin
 
     var qurey = Map<String, dynamic>.from(board.extrainfo);
     qurey['p'] = offset + 1;
@@ -76,7 +80,7 @@ class ArcaLiveExtractor extends BoardExtractor {
 
     List<ArticleInfo> articles;
 
-    articles = await ArcaLiveParser.parseBoard(html);
+    articles = await ClienParser.parseBoard(html);
 
     return PageInfo(
       articles: articles,
@@ -89,10 +93,10 @@ class ArcaLiveExtractor extends BoardExtractor {
   List<BoardInfo> best() {
     return [
       BoardInfo(
-        url: 'https://arca.live/b/issue',
-        name: '유머/이슈 채널',
-        extrainfo: {},
-        extractor: 'arcalive',
+        url: 'https://www.clien.net/service/group/clien_all',
+        name: '톺아보기',
+        extrainfo: {'od': 'T33'},
+        extractor: 'clien',
       ),
     ];
   }

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "933131300752",
+    "firebase_url": "https://communityexplorer-d4c70.firebaseio.com",
+    "project_id": "communityexplorer-d4c70",
+    "storage_bucket": "communityexplorer-d4c70.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:933131300752:android:4aa639ae1dfdda3653cd15",
+        "android_client_info": {
+          "package_name": "xyz.violet.communityexplorer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "933131300752-sustvgaqus61kuom831dk63gtndiiht6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbCjQ8KUUnOx0fTCBrdjzhoUcCcXGRWbQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "933131300752-sustvgaqus61kuom831dk63gtndiiht6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

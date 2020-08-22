@@ -7,7 +7,7 @@ import 'package:charset_converter/charset_converter.dart';
 import 'package:communityexplorer/component/dcinside/dcinside_parser.dart';
 import 'package:communityexplorer/component/huvkr/huvkr_parser.dart';
 import 'package:communityexplorer/component/interface.dart';
-import 'package:communityexplorer/network/http_header.dart';
+import 'package:communityexplorer/network/wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -41,7 +41,7 @@ class HuvkrExtractor extends BoardExtractor {
 
   @override
   Color color() {
-    return Colors.indigo;
+    return Color(0xFFEE4E73);
   }
 
   @override
@@ -76,7 +76,7 @@ class HuvkrExtractor extends BoardExtractor {
 
     var html = await CharsetConverter.decode(
         'euc-kr',
-        (await http.get(
+        (await HttpWrapper.getr(
           url,
           headers: {
             'Accept': HttpWrapper.accept,
@@ -87,7 +87,7 @@ class HuvkrExtractor extends BoardExtractor {
 
     List<ArticleInfo> articles;
 
-    articles = HuvkrParser.parseBoard(html);
+    articles = await HuvkrParser.parseBoard(html);
 
     return PageInfo(
       articles: articles,
@@ -112,5 +112,10 @@ class HuvkrExtractor extends BoardExtractor {
         extractor: 'huvkr',
       ),
     ];
+  }
+
+  @override
+  String toMobile(String url) {
+    return url;
   }
 }

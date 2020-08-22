@@ -12,19 +12,37 @@ abstract class BoardExtractor {
   Color color();
   Future<PageInfo> next(BoardInfo board, int offset);
   List<BoardInfo> best();
+  String toMobile(String url);
 }
 
-class BoardInfo {
+class Subscriable {}
+
+class BoardInfo extends Subscriable {
   final String url; // base url
   final String name;
   final Map<String, dynamic> extrainfo;
   final String extractor;
+  bool isEnabled = true;
 
   BoardInfo({
     this.url,
     this.extractor,
     this.name,
     this.extrainfo,
+  });
+}
+
+class BoardGroup extends Subscriable {
+  final List<BoardInfo> boards;
+  final String name;
+  final String subname;
+  final Color color;
+
+  BoardGroup({
+    this.boards,
+    this.name,
+    this.subname,
+    this.color,
   });
 }
 
@@ -52,6 +70,8 @@ class ArticleInfo {
   final String nickname;
   final String preface;
   final String info; // Id, No etc...
+  final bool hasImage;
+  final bool hasVideo;
   bool isLastArticle = false; // on page
   PageInfo page;
 
@@ -67,5 +87,7 @@ class ArticleInfo {
     this.views,
     this.writeTime,
     this.info,
+    this.hasImage,
+    this.hasVideo,
   });
 }

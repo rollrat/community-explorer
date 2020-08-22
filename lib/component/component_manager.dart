@@ -2,9 +2,11 @@
 // Copyright (C) 2020. rollrat. Licensed under the MIT License.
 
 import 'package:communityexplorer/component/arcalive/arcalive_ext.dart';
+import 'package:communityexplorer/component/clien/clien_ext.dart';
 import 'package:communityexplorer/component/dcinside/dcinside_ext.dart';
 import 'package:communityexplorer/component/huvkr/huvkr_ext.dart';
 import 'package:communityexplorer/component/interface.dart';
+import 'package:communityexplorer/component/ruliweb/ruliweb_ext.dart';
 
 class ComponentManager {
   static ComponentManager instance = ComponentManager();
@@ -16,6 +18,8 @@ class ComponentManager {
       DCInsideExtractor(),
       HuvkrExtractor(),
       ArcaLiveExtractor(),
+      RuliwebExtractor(),
+      ClienExtractor(),
     ];
   }
 

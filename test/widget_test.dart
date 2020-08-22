@@ -9,7 +9,7 @@ import 'dart:convert';
 
 import 'package:charset_converter/charset_converter.dart';
 import 'package:communityexplorer/component/huvkr/huvkr_parser.dart';
-import 'package:communityexplorer/network/http_header.dart';
+import 'package:communityexplorer/network/wrapper.dart';
 import 'package:communityexplorer/other/xpath_to_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -23,7 +23,7 @@ void main() {
     //     .toSelector(".//span[@class='reply_num']"));
 
     var url = 'http://web.humoruniv.com/board/humor/list.html?table=pds';
-    var html = (await http.get(
+    var html = (await HttpWrapper.getr(
       url,
       headers: {
         'Accept': HttpWrapper.accept,

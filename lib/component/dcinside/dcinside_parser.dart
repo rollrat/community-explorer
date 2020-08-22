@@ -3,10 +3,11 @@
 
 import 'package:communityexplorer/component/interface.dart';
 import 'package:communityexplorer/other/html/parser.dart';
+import 'package:flutter/foundation.dart';
 
 class DCInsideParser {
-  static List<ArticleInfo> parseGalleryBoard(String html) {
-    var doc = parse(html).querySelector('tbody');
+  static Future<List<ArticleInfo>> parseGalleryBoard(String html) async {
+    var doc = (await compute(parse, html)).querySelector('tbody');
     var result = List<ArticleInfo>();
 
     for (var tr in doc.querySelectorAll('tr')) {
@@ -18,6 +19,10 @@ class DCInsideParser {
           .querySelector('td:nth-of-type(2) > a > em')
           .attributes['class']
           .split(' ')[1];
+      var hashimg = type.contains('icon_pic') || type.contains('icon_recomimg');
+      var hashvideo =
+          type.contains('icon_toprecomimg') || type.contains('icon_movie');
+
       var title = tr.querySelector('td:nth-of-type(2) > a').text.trim();
       int reply = 0;
       try {
@@ -61,6 +66,8 @@ class DCInsideParser {
           views: view,
           upvote: recom,
           url: link,
+          hasImage: hashimg,
+          hasVideo: hashvideo,
         ),
       );
     }
@@ -68,8 +75,8 @@ class DCInsideParser {
     return result;
   }
 
-  static List<ArticleInfo> parseMinorGalleryBoard(String html) {
-    var doc = parse(html).querySelector('tbody');
+  static Future<List<ArticleInfo>> parseMinorGalleryBoard(String html) async {
+    var doc = (await compute(parse, html)).querySelector('tbody');
     var result = List<ArticleInfo>();
 
     for (var tr in doc.querySelectorAll('tr')) {
@@ -85,6 +92,10 @@ class DCInsideParser {
           .querySelector('td:nth-of-type(3) > a > em')
           .attributes['class']
           .split(' ')[1];
+      var hashimg = type.contains('icon_pic') || type.contains('icon_recomimg');
+      var hashvideo =
+          type.contains('icon_toprecomimg') || type.contains('icon_movie');
+
       var title = tr.querySelector('td:nth-of-type(3) > a').text.trim();
       int reply = 0;
       try {
@@ -129,6 +140,8 @@ class DCInsideParser {
           upvote: recom,
           preface: classify,
           url: link,
+          hasImage: hashimg,
+          hasVideo: hashvideo,
         ),
       );
     }

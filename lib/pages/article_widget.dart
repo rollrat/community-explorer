@@ -73,6 +73,12 @@ class _ArticleWidgetState extends State<ArticleWidget> {
                           Icon(MdiIcons.magnify, size: 15),
                           Container(width: 1),
                           Text(numberWithComma(widget.articleInfo.views)),
+                          widget.articleInfo.hasImage
+                              ? Icon(MdiIcons.image, size: 15)
+                              : Container(),
+                          widget.articleInfo.hasVideo
+                              ? Icon(MdiIcons.video, size: 15)
+                              : Container(),
                         ],
                       ),
                     ),
@@ -80,10 +86,17 @@ class _ArticleWidgetState extends State<ArticleWidget> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text(ComponentManager.instance
-                              .getExtractorByName(
-                                  widget.articleInfo.page.board.extractor)
-                              .name()),
+                          // Text(ComponentManager.instance
+                          //     .getExtractorByName(
+                          //         widget.articleInfo.page.board.extractor)
+                          //     .name()),
+                          Image.network(
+                            ComponentManager.instance
+                                .getExtractorByName(
+                                    widget.articleInfo.page.board.extractor)
+                                .fav(),
+                            width: 18,
+                          ),
                           Text('·'),
                           Text(widget.articleInfo.page.board.name),
                           Text('·'),
@@ -100,8 +113,11 @@ class _ArticleWidgetState extends State<ArticleWidget> {
         ),
       ),
       onTap: () async {
-        if (await canLaunch(widget.articleInfo.url)) {
-          await launch(widget.articleInfo.url);
+        var url = ComponentManager.instance
+            .getExtractorByName(widget.articleInfo.page.board.extractor)
+            .toMobile(widget.articleInfo.url);
+        if (await canLaunch(url)) {
+          await launch(url);
         }
       },
     );

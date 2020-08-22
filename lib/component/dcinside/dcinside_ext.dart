@@ -6,7 +6,7 @@ import 'dart:convert';
 
 import 'package:communityexplorer/component/dcinside/dcinside_parser.dart';
 import 'package:communityexplorer/component/interface.dart';
-import 'package:communityexplorer/network/http_header.dart';
+import 'package:communityexplorer/network/wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -40,7 +40,7 @@ class DCInsideExtractor extends BoardExtractor {
 
   @override
   Color color() {
-    return Colors.indigo;
+    return Color(0xFF4A56A8);
   }
 
   @override
@@ -74,7 +74,7 @@ class DCInsideExtractor extends BoardExtractor {
                 '${e.key}=${Uri.encodeQueryComponent(e.value.toString())}')
             .join('&');
 
-    var html = (await http.get(
+    var html = (await HttpWrapper.getr(
       url,
       headers: {
         'Accept': HttpWrapper.accept,
@@ -86,9 +86,9 @@ class DCInsideExtractor extends BoardExtractor {
     List<ArticleInfo> articles;
 
     if (!board.url.contains('/mgallery/'))
-      articles = DCInsideParser.parseGalleryBoard(html);
+      articles = await DCInsideParser.parseGalleryBoard(html);
     else
-      articles = DCInsideParser.parseMinorGalleryBoard(html);
+      articles = await DCInsideParser.parseMinorGalleryBoard(html);
 
     return PageInfo(
       articles: articles,
@@ -131,5 +131,10 @@ class DCInsideExtractor extends BoardExtractor {
         extractor: 'dcinside',
       ),
     ];
+  }
+
+  @override
+  String toMobile(String url) {
+    return url;
   }
 }

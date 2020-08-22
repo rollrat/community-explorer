@@ -4,6 +4,7 @@
 import 'package:communityexplorer/component/interface.dart';
 import 'package:communityexplorer/other/html/parser.dart';
 import 'package:communityexplorer/other/xpath_to_selector.dart';
+import 'package:flutter/foundation.dart';
 
 class ArcaLiveParser {
   /*
@@ -44,8 +45,8 @@ class ArcaLiveParser {
       return result;
   }
   */
-  static List<ArticleInfo> parseBoard(String html) {
-    var doc = parse(html);
+  static Future<List<ArticleInfo>> parseBoard(String html) async {
+    var doc = await compute(parse, html);
     var result = List<ArticleInfo>();
 
     for (int i = 1;; i++) {
@@ -118,6 +119,8 @@ class ArcaLiveParser {
           thumbnail: node.querySelector('img') != null
               ? 'http:' + node.querySelector('img').attributes['src']
               : null,
+          hasImage: node.querySelector('span.ion-ios-photos-outline') != null,
+          hasVideo: false,
         ),
       );
     }

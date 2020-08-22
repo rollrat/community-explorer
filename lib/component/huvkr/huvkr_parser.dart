@@ -4,6 +4,7 @@
 import 'package:communityexplorer/component/interface.dart';
 import 'package:communityexplorer/other/html/parser.dart';
 import 'package:communityexplorer/other/xpath_to_selector.dart';
+import 'package:flutter/foundation.dart';
 
 class HuvkrParser {
   /*
@@ -31,8 +32,9 @@ class HuvkrParser {
       return result;
   }
   */
-  static List<ArticleInfo> parseBoard(String html) {
-    var doc = parse(html);
+
+  static Future<List<ArticleInfo>> parseBoard(String html) async {
+    var doc = await compute(parse, html);
     var result = List<ArticleInfo>();
 
     for (int i = 1;; i++) {
@@ -101,6 +103,8 @@ class HuvkrParser {
         downvote: down,
         url: url,
         info: url.split('number=').last.split('&').first,
+        hasImage: true,
+        hasVideo: false,
       ));
     }
 

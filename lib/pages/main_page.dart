@@ -8,8 +8,10 @@ import 'package:communityexplorer/pages/left_page.dart';
 import 'package:communityexplorer/pages/right_page.dart';
 import 'package:communityexplorer/settings/settings.dart';
 import 'package:communityexplorer/widget/inner_drawer.dart';
+import 'package:communityexplorer/widget/toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class MainPage extends StatefulWidget {
@@ -42,6 +44,17 @@ class _MainPageState extends State<MainPage> {
       // articles.forEach((element) {
       // print(element.title);
       // });
+      if (BoardManager.instance.hasInitError) {
+        FlutterToast(context).showToast(
+          child: ToastWrapper(
+            isCheck: false,
+            isWarning: true,
+            msg: '일부항목을 불러오지 못했습니다 :(',
+          ),
+          gravity: ToastGravity.BOTTOM,
+          toastDuration: Duration(seconds: 4),
+        );
+      }
       setState(() {});
     });
   }
@@ -80,17 +93,18 @@ class _MainPageState extends State<MainPage> {
     final width = MediaQuery.of(context).size.width;
     final height =
         MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
+
     return InnerDrawer(
       key: _innerDrawerKey,
       onTapClose: true, // default false
       swipe: true, // default true
-      colorTransitionChild: Colors.cyan, // default Color.black54
+      // colorTransitionChild: Colors.cyan, // default Color.black54
       colorTransitionScaffold: Colors.black12, // default Color.black54
 
       //When setting the vertical offset, be sure to use only top or bottom
       offset: IDOffset.only(
         bottom: 0.00,
-        left: (width - 130) / width,
+        left: (width - 160) / width,
         right: (width - 60) / width,
       ),
 
@@ -99,8 +113,8 @@ class _MainPageState extends State<MainPage> {
 
       proportionalChildArea: false, // default true
       borderRadius: 0, // default 0
-      rightAnimationType: InnerDrawerAnimation.linear, // default static
-      leftAnimationType: InnerDrawerAnimation.linear,
+      rightAnimationType: InnerDrawerAnimation.static, // default static
+      leftAnimationType: InnerDrawerAnimation.static,
       backgroundDecoration: BoxDecoration(
           color: Settings.themeWhat
               ? Colors.grey.shade900.withOpacity(0.4)
@@ -121,8 +135,8 @@ class _MainPageState extends State<MainPage> {
       // leftChild: Container(
       //   width: 10,
       // ), // required if rightChild is not set
-      rightChild: LeftPage(),
-      leftChild: RightPage(),
+      rightChild: RightPage(),
+      leftChild: LeftPage(),
 
       //  A Scaffold is generally used but you are free to use other widgets
       // Note: use "automaticallyImplyLeading: false" if you do not personalize "leading" of Bar
@@ -154,6 +168,7 @@ class _MainPageState extends State<MainPage> {
                   onRefresh: _onRefresh,
                   onLoading: _onLoading,
                   child: ListView.separated(
+                    physics: BouncingScrollPhysics(),
                     itemBuilder: (c, i) => ArticleWidget(
                       articleInfo: articles[i],
                     ),
