@@ -10,14 +10,35 @@ import 'package:communityexplorer/pages/main_page.dart';
 import 'package:communityexplorer/settings/settings.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io' show Platform;
+
+import 'package:provider/provider.dart';
+
+void err(FlutterErrorDetails details) {
+  Logger.error('[Unhandled] MSG: ' +
+      details.exception.toString() +
+      '\n' +
+      details.stack.toString());
+  print(details.exception.toString());
+  print(details.stack.toString());
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  FlutterError.onError = err;
+
   await Settings.init();
   await Logger.init();
+
+  await Logger.info('Hi');
+
+  await Hive.initFlutter();
+  await Hive.openBox('viewed');
+  await Hive.openBox('groups');
 
   var _random = Random();
   var rr = _random.nextInt(10) + 2;
@@ -27,8 +48,6 @@ void main() async {
   if (Platform.isAndroid) {
     if (!appdir.path.contains('/xyz.violet.communityexplorer/')) return;
   }
-
-  BoardManager.test();
 
   runApp(
     DynamicTheme(
@@ -42,7 +61,10 @@ void main() async {
       themedWidgetBuilder: (context, theme) {
         return MaterialApp(
           theme: theme,
-          home: MainPage(),
+          home: Provider(
+            create: (_) => BoardManager(),
+            child: MainPage(),
+          ),
         );
       },
     ),

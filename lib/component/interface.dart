@@ -15,12 +15,10 @@ abstract class BoardExtractor {
   String toMobile(String url);
 }
 
-class Subscriable {}
-
-class BoardInfo extends Subscriable {
+class BoardInfo {
   final String url; // base url
   final String name;
-  final Map<String, dynamic> extrainfo;
+  final Map<String, String> extrainfo;
   final String extractor;
   bool isEnabled = true;
 
@@ -30,9 +28,26 @@ class BoardInfo extends Subscriable {
     this.name,
     this.extrainfo,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'url': url,
+      'name': name,
+      'extrainfo': extrainfo,
+      'extractor': extractor,
+      'isenabled': isEnabled
+    };
+  }
+
+  factory BoardInfo.fromMap(Map<String, dynamic> map) {
+    var board = BoardInfo(
+        url: map['url'], name: map['name'], extractor: map['extractor']);
+    board.isEnabled = map['isenabled'];
+    return board;
+  }
 }
 
-class BoardGroup extends Subscriable {
+class BoardGroup {
   final List<BoardInfo> boards;
   final String name;
   final String subname;
@@ -44,6 +59,26 @@ class BoardGroup extends Subscriable {
     this.subname,
     this.color,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'boards': boards.map((e) => e.toMap()),
+      'name': name,
+      'subname': subname,
+      'color': color.value,
+    };
+  }
+
+  factory BoardGroup.fromMap(Map<String, dynamic> map) {
+    return BoardGroup(
+      boards: map['boards'].map((e) => BoardInfo.fromMap(e)).toList(),
+      name: map['name'],
+      subname: map['subname'],
+      color: Color(
+        map['color'],
+      ),
+    );
+  }
 }
 
 class PageInfo {

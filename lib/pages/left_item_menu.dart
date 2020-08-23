@@ -38,7 +38,8 @@ class LeftItemSelector extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         // _typeItem(context, Icons.grid_on, 'srt0', 0),
-                        _typeItem(context, MdiIcons.openInNew, '이 게시판만 열기', 0),
+                        _typeItem(context, MdiIcons.openInNew,
+                            '이 ' + (isGroup ? '그룹' : '게시판') + '만 열기', 0),
                         _typeItem(context, MdiIcons.scissorsCutting, '수정', 1),
                         _typeItem(context, MdiIcons.trashCanOutline, '삭제', 2),
                         // _typeItem(context, MdiIcons.viewAgendaOutline, 'srt2', 2),

@@ -34,9 +34,7 @@ class DCInsideParser {
             .split('/')
             .first
             .trim());
-      } catch (e) {
-        print(e);
-      }
+      } catch (e) {}
       var nick =
           tr.querySelector('td:nth-of-type(3)').attributes['data-nick'] ?? '';
       var uid = tr.querySelector('td:nth-of-type(3)').attributes['data-uid'];
@@ -107,9 +105,7 @@ class DCInsideParser {
             .split('/')
             .first
             .trim());
-      } catch (e) {
-        print(e);
-      }
+      } catch (e) {}
       var nick =
           tr.querySelector('td:nth-of-type(4)').attributes['data-nick'] ?? '';
       var uid = tr.querySelector('td:nth-of-type(4)').attributes['data-uid'];

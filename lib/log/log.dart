@@ -34,7 +34,8 @@ class Logger {
   }
 
   static Future<void> error(String msg) async {
-    await log('[Error] ' + msg);
+    await log(
+        '[Error] [This message will be sent to the fc-crashlytics] ' + msg);
   }
 
   static Future<void> warning(String msg) async {

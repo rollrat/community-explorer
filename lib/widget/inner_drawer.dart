@@ -442,7 +442,7 @@ class InnerDrawerState extends State<InnerDrawer>
       case InnerDrawerAnimation.linear:
         return Align(
           alignment: _drawerOuterAlignment,
-          widthFactor: 1 - (_controller.value),
+          widthFactor: 1 - (_controller.value / 3),
           child: container,
         );
       case InnerDrawerAnimation.quadratic:

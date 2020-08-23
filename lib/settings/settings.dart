@@ -13,6 +13,8 @@ class Settings {
 
   static bool enableFavicon;
 
+  static int viewType; // 0: 3, 1: 2
+
   static Future<void> init() async {
     var mc = (await SharedPreferences.getInstance()).getInt('majorColor');
     var mac =
@@ -46,6 +48,13 @@ class Settings {
       enableFavicon = false;
       await (await SharedPreferences.getInstance())
           .setBool('enablefavicon', enableFavicon);
+    }
+
+    viewType = (await SharedPreferences.getInstance()).getInt('viewtype');
+    if (viewType == null) {
+      viewType = 0;
+      await (await SharedPreferences.getInstance())
+          .setInt('viewtype', viewType);
     }
   }
 
@@ -89,5 +98,10 @@ class Settings {
   static Future<void> setEnableFavicon(bool nn) async {
     enableFavicon = nn;
     (await SharedPreferences.getInstance()).setBool('enablefavicon', nn);
+  }
+
+  static Future<void> setViewType(int nn) async {
+    viewType = nn;
+    (await SharedPreferences.getInstance()).setInt('viewtype', nn);
   }
 }

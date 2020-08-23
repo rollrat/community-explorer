@@ -12,6 +12,11 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class LeftPage extends StatelessWidget {
+  final BoardManager boardManager;
+  final VoidCallback updateMain;
+
+  LeftPage({this.updateMain, this.boardManager});
+
   @override
   Widget build(BuildContext context) {
     final double statusBarHeight = MediaQuery.of(context).padding.top;
@@ -31,27 +36,28 @@ class LeftPage extends StatelessWidget {
                 children: [
                   Container(height: 8),
                   Text(
-                    '구독',
+                    boardManager.getName(),
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
+                  boardManager.getSubName() != ''
+                      ? Container(height: 4)
+                      : Container(),
+                  boardManager.getSubName() != ''
+                      ? Text(
+                          boardManager.getSubName(),
+                          style: TextStyle(fontSize: 15),
+                        )
+                      : Container(),
                   Container(height: 4),
                   ListView.builder(
                     padding: EdgeInsets.zero,
                     physics: BouncingScrollPhysics(),
                     shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      // var s = BoardManager.instance.getBoards()[index];
-                      // if (s is BoardInfo) {
-                      //   var com = ComponentManager.instance
-                      //       .getExtractorByName(s.extractor);
-                      //   return _Check(com.name(), s.name, com.color());
-                      // } else if (s is BoardGroup) {
-                      //   return _Check(s.name, s.subname, s.color);
-                      // }
-                      // return Container();
-                      return _Check(BoardManager.instance.getBoards()[index]);
-                    },
-                    itemCount: BoardManager.instance.getBoards().length,
+                    itemBuilder: (context, index) => _Check(
+                      boardManager.getBoards()[index],
+                      updateMain: updateMain,
+                    ),
+                    itemCount: boardManager.getBoards().length,
                   ),
                   Container(height: 16),
                   SizedBox(
@@ -90,14 +96,10 @@ class LeftPage extends StatelessWidget {
 }
 
 class _Check extends StatefulWidget {
-  // final String img;
-  // final String extractorName;
-  // final String subName;
-  // final Color color;
-  final Subscriable subscriable;
+  final BoardInfo board;
+  final VoidCallback updateMain;
 
-  // _Check(this.extractorName, this.subName, this.color);
-  _Check(this.subscriable);
+  _Check(this.board, {this.updateMain});
 
   @override
   __CheckState createState() => __CheckState();
@@ -110,78 +112,13 @@ class __CheckState extends State<_Check> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    var s = widget.subscriable;
-    if (s is BoardInfo) {
-      var com = ComponentManager.instance.getExtractorByName(s.extractor);
-      extractorName = com.name();
-      subName = s.name;
-      color = com.color();
-    } else if (s is BoardGroup) {
-      extractorName = s.name;
-      subName = s.subname;
-      color = s.color;
-    }
+    var s = widget.board;
+    var com = ComponentManager.instance.getExtractorByName(s.extractor);
+    extractorName = com.name();
+    subName = s.name;
+    color = com.color();
+    super.initState();
   }
-
-  // AnimationController scaleAnimationController;
-  // double scale = 1.0;
-
-  // @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   super.initState();
-
-  //   scaleAnimationController = AnimationController(
-  //     vsync: this,
-  //     lowerBound: 1.0,
-  //     upperBound: 1.08,
-  //     duration: Duration(milliseconds: 180),
-  //   );
-  //   scaleAnimationController.addListener(() {
-  //     setState(() {
-  //       scale = scaleAnimationController.value;
-  //     });
-  //   });
-  // }
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Padding(
-  //     padding: EdgeInsets.only(top: 8),
-  //     child: GestureDetector(
-  //       child: SizedBox(
-  //         // width: 50,
-  //         // height: 50,
-  //         child: AnimatedContainer(
-  //           curve: Curves.easeInOut,
-  //           duration: Duration(milliseconds: 150),
-  //           transform: Matrix4.identity()
-  //             ..translate(50 / 2, 50 / 2)
-  //             ..scale(scale)
-  //             ..translate(-50 / 2, -50 / 2),
-  //           child: Image.network(
-  //             widget.img,
-  //             width: 35,
-  //             height: 35,
-  //             fit: BoxFit.fill,
-  //             // scale: widget.scale,
-  //           ),
-  //         ),
-  //       ),
-  //       onTapDown: (details) => setState(() {
-  //         scale = 0.90;
-  //       }),
-  //       onTapUp: (details) => setState(() {
-  //         scale = 1.0;
-  //       }),
-  //       onTapCancel: () => setState(() {
-  //         scale = 1.0;
-  //       }),
-  //     ),
-  //   );
-  // }
-
-  bool check = false;
 
   @override
   Widget build(BuildContext context) {
@@ -201,19 +138,13 @@ class __CheckState extends State<_Check> with TickerProviderStateMixin {
           CircularCheckBox(
             inactiveColor: color,
             activeColor: color,
-            value: check,
+            value: widget.board.isEnabled,
             materialTapTargetSize: MaterialTapTargetSize.padded,
             onChanged: (bool value) {
               // setState(() {
-              //   scale2 = 1.03;
-              //   scale1 = 1.0;
-              //   if (globalCheck) return;
-              //   globalCheck = !globalCheck;
-              //   userlangCheck = false;
+              widget.board.isEnabled = !widget.board.isEnabled;
               // });
-              setState(() {
-                check = value;
-              });
+              widget.updateMain();
             },
           ),
           Expanded(
@@ -238,14 +169,15 @@ class __CheckState extends State<_Check> with TickerProviderStateMixin {
         ],
       ),
       onTap: () {
-        setState(() {
-          check = !check;
-        });
+        // setState(() {
+        widget.board.isEnabled = !widget.board.isEnabled;
+        // });
+        widget.updateMain();
       },
       onLongPress: () async {
         var v = await showDialog(
           context: context,
-          child: LeftItemSelector(widget.subscriable is BoardGroup),
+          child: LeftItemSelector(false),
         );
       },
     );

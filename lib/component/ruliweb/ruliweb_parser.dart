@@ -41,7 +41,9 @@ class RuliwebParser {
 
       var dtt = item.querySelector('/td[7]'.toQureySelector()).text.trim();
       if (dtt.contains(':') && dtt.length <= 5)
-        dtt = DateFormat('yyyy-MM-dd ').format(DateTime.now()) + dtt;
+        dtt = DateFormat('yyyy-MM-dd').format(DateTime.now()) + ' ' + dtt;
+      else if (dtt.contains('.') && dtt.length <= 8)
+        dtt = '20' + dtt.replaceAll('.', '-') + ' 00:00';
       var dt = DateTime.parse(dtt);
 
       var url = item
@@ -102,7 +104,9 @@ class RuliwebParser {
 
       var dtt = item.querySelector('/td[6]'.toQureySelector()).text.trim();
       if (dtt.contains(':') && dtt.length <= 5)
-        dtt = DateFormat('yyyy-MM-dd ').format(DateTime.now()) + dtt;
+        dtt = DateFormat('yyyy-MM-dd').format(DateTime.now()) + ' ' + dtt;
+      else if (dtt.contains('.') && dtt.length <= 8)
+        dtt = '20' + dtt.replaceAll('.', '-') + ' 00:00';
       var dt = DateTime.parse(dtt);
 
       var hasImage = item.querySelector('i.icon-picture') != null;

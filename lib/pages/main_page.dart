@@ -12,6 +12,7 @@ import 'package:communityexplorer/widget/toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class MainPage extends StatefulWidget {
@@ -35,8 +36,10 @@ class _MainPageState extends State<MainPage> {
     super.initState();
 
     Future.delayed(Duration(milliseconds: 100)).then((value) async {
+      var board = Provider.of<BoardManager>(context);
       try {
-        articles = await BoardManager.instance.init();
+        // articles = await widget.boardManager.init();
+        articles = Provider.of<BoardManager>(context).getArticles();
       } catch (e, st) {
         print(e);
         print(st);
@@ -44,7 +47,7 @@ class _MainPageState extends State<MainPage> {
       // articles.forEach((element) {
       // print(element.title);
       // });
-      if (BoardManager.instance.hasInitError) {
+      if (board.hasInitError) {
         FlutterToast(context).showToast(
           child: ToastWrapper(
             isCheck: false,
@@ -64,7 +67,7 @@ class _MainPageState extends State<MainPage> {
     // await Future.delayed(Duration(milliseconds: 1000));
     // if failed,use refreshFailed()
     try {
-      articles = await BoardManager.instance.refresh();
+      articles = await widget.boardManager.refresh();
     } catch (e) {
       print(e);
     }
@@ -78,7 +81,7 @@ class _MainPageState extends State<MainPage> {
     // if failed,use loadFailed(),if no data return,use LoadNodata()
     // items.add((items.length + 1).toString());
     try {
-      articles = await BoardManager.instance.next();
+      articles = await widget.boardManager.next();
     } catch (e) {
       print(e);
     }
@@ -114,7 +117,7 @@ class _MainPageState extends State<MainPage> {
       proportionalChildArea: false, // default true
       borderRadius: 0, // default 0
       rightAnimationType: InnerDrawerAnimation.static, // default static
-      leftAnimationType: InnerDrawerAnimation.static,
+      leftAnimationType: InnerDrawerAnimation.linear,
       backgroundDecoration: BoxDecoration(
           color: Settings.themeWhat
               ? Colors.grey.shade900.withOpacity(0.4)
@@ -135,8 +138,16 @@ class _MainPageState extends State<MainPage> {
       // leftChild: Container(
       //   width: 10,
       // ), // required if rightChild is not set
-      rightChild: RightPage(),
-      leftChild: LeftPage(),
+      rightChild: RightPage(
+        updateMain: () => setState(() {}),
+      ),
+      leftChild: LeftPage(
+        updateMain: () => setState(() {
+          widget.boardManager.tidy();
+          articles = widget.boardManager.getArticles();
+        }),
+        boardManager: widget.boardManager,
+      ),
 
       //  A Scaffold is generally used but you are free to use other widgets
       // Note: use "automaticallyImplyLeading: false" if you do not personalize "leading" of Bar
@@ -168,9 +179,12 @@ class _MainPageState extends State<MainPage> {
                   onRefresh: _onRefresh,
                   onLoading: _onLoading,
                   child: ListView.separated(
-                    physics: BouncingScrollPhysics(),
+                    // physics: BouncingScrollPhysics(),
+                    addAutomaticKeepAlives: false,
                     itemBuilder: (c, i) => ArticleWidget(
+                      key: ValueKey(articles[i].url),
                       articleInfo: articles[i],
+                      viewType: Settings.viewType,
                     ),
                     // itemExtent: 50.0,
                     itemCount: articles.length,
