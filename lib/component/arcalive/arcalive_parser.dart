@@ -65,8 +65,6 @@ class ArcaLiveParser {
         if (node == null) break;
       }
 
-      // print(node.innerHtml);
-
       var no = node
           .querySelector('div:nth-of-type(1) > span:nth-of-type(1)')
           .text
@@ -126,8 +124,6 @@ class ArcaLiveParser {
         ),
       );
     }
-
-    print(result.length);
 
     return result;
   }

@@ -56,7 +56,7 @@ class _RecordPageState extends State<RecordPage> {
   Widget build(BuildContext context) {
     final statusBarHeight = MediaQuery.of(context).padding.top;
 
-    var record = widget.boardManager.getRecord();
+    var record = widget.boardManager.getFixed().getRecord();
 
     return Scaffold(
       body: Padding(

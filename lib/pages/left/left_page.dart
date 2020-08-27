@@ -233,6 +233,7 @@ class __CheckState extends State<_Check> with TickerProviderStateMixin {
           // var gg = await BoardManager.get(widget.subgroup.name);
           var gg = BoardManager.getByGroup(
               BoardGroup(boards: [widget.board], name: widget.board.name));
+          gg.setFixed(widget.boardManager.getFixed());
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => MainPage(gg, true)),
@@ -288,7 +289,13 @@ class __GroupState extends State<_Group> with TickerProviderStateMixin {
             checkColor: widget.subgroup.color,
             value: true,
             materialTapTargetSize: MaterialTapTargetSize.padded,
-            onChanged: (bool value) {},
+            onChanged: (bool value) async {
+              var gg = await BoardManager.get(widget.subgroup.name);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MainPage(gg)),
+              );
+            },
           ),
           Expanded(
               child: Column(
@@ -312,7 +319,6 @@ class __GroupState extends State<_Group> with TickerProviderStateMixin {
         ],
       ),
       onTap: () async {
-        print(widget.subgroup.name);
         var gg = await BoardManager.get(widget.subgroup.name);
         Navigator.push(
           context,

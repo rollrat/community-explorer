@@ -148,6 +148,14 @@ class BoardManager {
     return bm;
   }
 
+  BoardFixed getFixed() {
+    return _fixed;
+  }
+
+  void setFixed(BoardFixed fixed) {
+    _fixed = fixed;
+  }
+
   static List<String> getGlobalFilter() {
     var filtert = Hive.box('filter').get('global', defaultValue: '[]');
     if (filtert == '') {

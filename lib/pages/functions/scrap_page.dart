@@ -56,7 +56,7 @@ class _ScrapPageState extends State<ScrapPage> {
   Widget build(BuildContext context) {
     final statusBarHeight = MediaQuery.of(context).padding.top;
 
-    var scraps = widget.boardManager.getScraps();
+    var scraps = widget.boardManager.getFixed().getScraps();
 
     return Scaffold(
       body: Padding(

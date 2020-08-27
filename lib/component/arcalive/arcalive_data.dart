@@ -529,7 +529,6 @@ class ArcaLiveData extends BoardData {
     var rr = List<String>();
 
     boards.forEach((key, value) {
-      // print(key);
       rr.add(key);
     });
 

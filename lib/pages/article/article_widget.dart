@@ -39,7 +39,7 @@ class _ArticleWidgetState extends State<ArticleWidget> {
   void initState() {
     viewed =
         Hive.box('viewed').get(widget.articleInfo.url, defaultValue: false);
-    scraped = widget.boardManager.isScrapred(widget.articleInfo.url);
+    scraped = widget.boardManager.getFixed().isScrapred(widget.articleInfo.url);
     super.initState();
   }
 
@@ -272,7 +272,7 @@ class _ArticleWidgetState extends State<ArticleWidget> {
             var url = extractor.toMobile(widget.articleInfo.url);
 
             Hive.box('viewed').put(widget.articleInfo.url, true);
-            await widget.boardManager.addRecord(widget.articleInfo);
+            await widget.boardManager.getFixed().addRecord(widget.articleInfo);
             await Navigator.push(
               context,
               MaterialPageRoute(
@@ -284,7 +284,9 @@ class _ArticleWidgetState extends State<ArticleWidget> {
                         articleInfo: widget.articleInfo,
                       )),
             );
-            scraped = widget.boardManager.isScrapred(widget.articleInfo.url);
+            scraped = widget.boardManager
+                .getFixed()
+                .isScrapred(widget.articleInfo.url);
             setState(() {
               viewed = true;
             });
@@ -303,13 +305,18 @@ class _ArticleWidgetState extends State<ArticleWidget> {
           onLongPress: () async {
             var v = await showDialog(
               context: context,
-              child: ArticleSelector(
-                  widget.boardManager.isScrapred(widget.articleInfo.url)),
+              child: ArticleSelector(widget.boardManager
+                  .getFixed()
+                  .isScrapred(widget.articleInfo.url)),
             );
 
             if (v == 0) {
-              if (!widget.boardManager.isScrapred(widget.articleInfo.url)) {
-                await widget.boardManager.addScrap(widget.articleInfo);
+              if (!widget.boardManager
+                  .getFixed()
+                  .isScrapred(widget.articleInfo.url)) {
+                await widget.boardManager
+                    .getFixed()
+                    .addScrap(widget.articleInfo);
                 scraped = true;
                 FlutterToast(context).showToast(
                   child: ToastWrapper(
@@ -321,7 +328,9 @@ class _ArticleWidgetState extends State<ArticleWidget> {
                   toastDuration: Duration(seconds: 4),
                 );
               } else {
-                await widget.boardManager.removeScrap(widget.articleInfo);
+                await widget.boardManager
+                    .getFixed()
+                    .removeScrap(widget.articleInfo);
                 scraped = false;
                 FlutterToast(context).showToast(
                   child: ToastWrapper(

@@ -68,8 +68,6 @@ class ArcaLiveExtractor extends BoardExtractor {
                 '${e.key}=${Uri.encodeQueryComponent(e.value.toString())}')
             .join('&');
 
-    print(url);
-
     var html = (await HttpWrapper.getr(
       url,
       headers: {

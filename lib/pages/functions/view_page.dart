@@ -228,14 +228,19 @@ class _ViewPageState extends State<ViewPage> {
               },
             ),
             new IconButton(
-              icon: new Icon(
-                  widget.boardManager.isScrapred(widget.articleInfo.url)
-                      ? Icons.star
-                      : Icons.star_border),
+              icon: new Icon(widget.boardManager
+                      .getFixed()
+                      .isScrapred(widget.articleInfo.url)
+                  ? Icons.star
+                  : Icons.star_border),
               tooltip: '스크랩',
               onPressed: () async {
-                if (!widget.boardManager.isScrapred(widget.articleInfo.url)) {
-                  await widget.boardManager.addScrap(widget.articleInfo);
+                if (!widget.boardManager
+                    .getFixed()
+                    .isScrapred(widget.articleInfo.url)) {
+                  await widget.boardManager
+                      .getFixed()
+                      .addScrap(widget.articleInfo);
                   FlutterToast(context).showToast(
                     child: ToastWrapper(
                       isCheck: true,
@@ -246,7 +251,9 @@ class _ViewPageState extends State<ViewPage> {
                     toastDuration: Duration(seconds: 4),
                   );
                 } else {
-                  await widget.boardManager.removeScrap(widget.articleInfo);
+                  await widget.boardManager
+                      .getFixed()
+                      .removeScrap(widget.articleInfo);
                   FlutterToast(context).showToast(
                     child: ToastWrapper(
                       isCheck: true,

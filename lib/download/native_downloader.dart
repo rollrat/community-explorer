@@ -87,7 +87,6 @@ class NativeDownloader {
   static Future<Directory> getLibraryDirectory() async {
     if (nativeDir != null) return nativeDir;
     final String result = await platform.invokeMethod('getNativeDir');
-    print(await getApplicationSupportDirectory());
     nativeDir = Directory(result);
     return nativeDir;
   }
@@ -128,12 +127,8 @@ class NativeDownloader {
 
   NativeDownloader() {
     Future.delayed(Duration(seconds: 1)).then((value) async {
-      // int prev = 0;
       while (true) {
         var x = Utf8.fromUtf8(downloaderStatus());
-        // var y = int.parse(x.split('|')[2]);
-        // print(x + '       ' + ((y - prev) / 1024.0).toString() + ' KB/S');
-        // prev = y;
         var ll = x.split('|');
         if (ll.length == 5) {
           var complete = ll.last.split(',');
