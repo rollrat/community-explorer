@@ -41,4 +41,10 @@ class Logger {
   static Future<void> warning(String msg) async {
     await log('[Warning] ' + msg);
   }
+
+  static Future<void> showLogs() async {
+    (await logFile.readAsLines()).forEach((element) {
+      print(element);
+    });
+  }
 }

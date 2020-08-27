@@ -84,7 +84,7 @@ class DCInsideParser {
 
       var classify = tr.querySelector('td:nth-of-type(2)').text.trim();
 
-      if (classify == '공지' || classify == '설문') continue;
+      if (classify == '공지' || classify == '설문' || classify == 'AD') continue;
 
       var type = tr
           .querySelector('td:nth-of-type(3) > a > em')

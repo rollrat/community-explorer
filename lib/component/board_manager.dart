@@ -1,8 +1,10 @@
 // This source code is a part of Project Violet.
 // Copyright (C) 2020. rollrat. Licensed under the MIT License.
 
+import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:core';
 
 import 'package:collection/collection.dart';
 import 'package:communityexplorer/component/component_manager.dart';
@@ -19,11 +21,38 @@ class BoardManager {
   List<ArticleInfo> _articles = List<ArticleInfo>();
   PriorityQueue<ArticleInfo> _queue =
       PriorityQueue<ArticleInfo>((a, b) => b.writeTime.compareTo(a.writeTime));
+  List<ArticleInfo> _scraps = List<ArticleInfo>();
+  HashSet<String> _scrapURLS = HashSet<String>();
+  List<ArticleInfo> _record = List<ArticleInfo>();
+  List<String> _filter = List<String>();
 
   bool hasInitError = false;
 
-  BoardManager([String groupName = 'global']) {
-    _initGroup(groupName);
+  static Future<BoardManager> get(String groupName) async {
+    var bm = BoardManager();
+    bm._initGroup(groupName);
+    return bm;
+  }
+
+  static BoardManager getByGroup(BoardGroup group) {
+    var bm = BoardManager();
+    bm._group = group;
+    return bm;
+  }
+
+  static List<String> getGlobalFilter() {
+    var filtert = Hive.box('filter').get('global', defaultValue: '[]');
+    if (filtert == '') {
+      return List<String>();
+    }
+    return (jsonDecode(filtert) as List<dynamic>)
+        .map((e) => e as String)
+        .toList();
+  }
+
+  static Future<void> saveGlobalFilter(List<String> filter) async {
+    var filtert = jsonEncode(filter);
+    await Hive.box("filter").put('global', filtert == null ? '[]' : filtert);
   }
 
   // static void test() {
@@ -86,7 +115,9 @@ class BoardManager {
   // }
 
   String getName() {
-    return _group.name;
+    var s = _group.name.split('|');
+    if (s.length > 1) s.removeLast();
+    return s.join('|');
   }
 
   Color getColor() {
@@ -97,27 +128,78 @@ class BoardManager {
     return _group.subname;
   }
 
-  void _initGroup(String group) {
+  Future<void> _initGroup(String group) async {
     var groupt = Hive.box('groups')
         .get(base64.encode(utf8.encode(group)), defaultValue: '');
-    if (group == 'global' && groupt == '') {
+    var scrapt = Hive.box('scraps')
+        .get(base64.encode(utf8.encode(group)), defaultValue: '[]');
+    var recordt = Hive.box('record')
+        .get(base64.encode(utf8.encode(group)), defaultValue: '[]');
+    var filtert = Hive.box('filter')
+        .get(base64.encode(utf8.encode(group)), defaultValue: '[]');
+    if (group == '구독' && groupt == '') {
       _group = BoardGroup(
         boards: List<BoardInfo>(),
         name: '구독',
         subname: '일반',
         color: Colors.purple,
+        subGroups: List<SubGroupInfo>(),
       );
-      saveGroup();
-      return;
+      await saveGroup();
+      // return;
+    }
+    if (scrapt == '') {
+      _scraps = List<ArticleInfo>();
+      await saveScrap();
+    }
+    if (recordt == '') {
+      _record = List<ArticleInfo>();
+      await saveScrap();
+    }
+    if (recordt == '') {
+      _record = List<ArticleInfo>();
+      await saveScrap();
+    }
+    if (filtert == '') {
+      _filter = List<String>();
+      await saveScrap();
     }
     if (groupt == '') return;
 
     _group = BoardGroup.fromMap(jsonDecode(groupt) as Map<String, dynamic>);
+    _scraps = (jsonDecode(scrapt) as List<dynamic>)
+        .map((e) => ArticleInfo.fromMap(e as Map<String, dynamic>))
+        .toList();
+    _record = (jsonDecode(recordt) as List<dynamic>)
+        .map((e) => ArticleInfo.fromMap(e as Map<String, dynamic>))
+        .toList();
+    _filter =
+        (jsonDecode(filtert) as List<dynamic>).map((e) => e as String).toList();
+    _scrapURLS.addAll(_scraps.map((e) => e.url));
   }
 
-  void saveGroup() {
-    var groupt = _group.toString();
-    Hive.box("groups").put(base64.encode(utf8.encode(_group.name)), groupt);
+  Future<void> saveGroup() async {
+    var groupt = jsonEncode(_group.toMap());
+    await Hive.box("groups")
+        .put(base64.encode(utf8.encode(_group.name)), groupt);
+  }
+
+  Future<void> saveScrap() async {
+    var scrapt = jsonEncode(_scraps.map((e) => e.toMap()).toList());
+    await Hive.box("scraps").put(base64.encode(utf8.encode(_group.name)),
+        scrapt == null ? '[]' : scrapt);
+  }
+
+  Future<void> saveRecord() async {
+    var recordt = jsonEncode(_record.map((e) => e.toMap()).toList());
+    await Hive.box("record").put(base64.encode(utf8.encode(_group.name)),
+        recordt == null ? '[]' : recordt);
+  }
+
+  Future<void> saveFilter() async {
+    var filtert = jsonEncode(_filter);
+    await Hive.box("filter").put(base64.encode(utf8.encode(_group.name)),
+        filtert == null ? '[]' : filtert);
   }
 
   // void registerBoard(BoardInfo info) {
@@ -130,6 +212,71 @@ class BoardManager {
 
   List<BoardInfo> getBoards() {
     return _group.boards;
+  }
+
+  List<SubGroupInfo> getSubGroups() {
+    return _group.subGroups;
+  }
+
+  List<ArticleInfo> getScraps() {
+    return _scraps;
+  }
+
+  List<ArticleInfo> getRecord() {
+    return _record;
+  }
+
+  List<String> getFilter() {
+    return _filter;
+  }
+
+  Future<void> addScrap(ArticleInfo articleInfo) async {
+    _scraps.add(articleInfo);
+    _scrapURLS.add(articleInfo.url);
+    await saveScrap();
+  }
+
+  Future<void> removeScrap(ArticleInfo articleInfo) async {
+    _scraps.removeWhere((element) => element.url == articleInfo.url);
+    _scrapURLS.remove(articleInfo.url);
+    await saveScrap();
+  }
+
+  bool isScrapred(String url) {
+    return _scrapURLS.contains(url);
+  }
+
+  Future<void> addFilter(String filt) async {
+    _filter.add(filt);
+    await saveFilter();
+  }
+
+  Future<void> removeFilter(String filt) async {
+    _filter.removeWhere((element) => element == filt);
+    await saveFilter();
+  }
+
+  Future<void> addRecord(ArticleInfo articleInfo) async {
+    _record.add(articleInfo);
+    await saveRecord();
+  }
+
+  Future<void> deleteBoard(BoardInfo board) async {
+    _group.boards.remove(board);
+    _articles.removeWhere((element) => element.page.board == board);
+
+    var tq = _queue.removeAll().toList();
+    tq.removeWhere((element) => element.page.board == board);
+    _queue.clear();
+    _queue.addAll(_distinct(tq));
+
+    await saveGroup();
+  }
+
+  Future<void> deleteSubGroup(SubGroupInfo subGroup) async {
+    _group.subGroups.remove(subGroup);
+
+    await saveGroup();
   }
 
   List<ArticleInfo> getArticles() {

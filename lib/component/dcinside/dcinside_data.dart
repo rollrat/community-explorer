@@ -1,8 +1,11 @@
 // This source code is a part of Project Violet.
 // Copyright (C) 2020. rollrat. Licensed under the MIT License.
 
+import 'package:communityexplorer/component/interface.dart';
+import 'package:communityexplorer/other/html/parser.dart';
+
 // 2020-08-22
-class DCInsideData {
+class DCInsideData extends BoardData {
   static const ngdata = {
     "100분 토론": "100toron",
     "10대": "friend_boy_1",
@@ -237,7 +240,7 @@ class DCInsideData {
     "구해줘": "helpme",
     "구혜선": "jangnara",
     "국내": "travel",
-    "국내야구": "baseball_new8",
+    "국내야구": "baseball_new9",
     "국내연예": "entertainment",
     "국내축구": "football_k",
     "국민대": "kookmin",
@@ -610,7 +613,7 @@ class DCInsideData {
     "마재윤": "majaeyun",
     "마포구": "mapo",
     "막장": "accident_new",
-    "만화": "comic_new1",
+    "만화": "comic_new2",
     "매리는 외박 중": "cantabile",
     "맥도날드": "mcdonalds",
     "맥주전쟁": "oneh_essay",
@@ -1820,7 +1823,7 @@ class DCInsideData {
     "해외 직접 구매": "timessquare",
     "해외야구": "baseball_ab",
     "해외연예": "etc_entertainment3",
-    "해외축구": "football_new4",
+    "해외축구": "football_new6",
     "해전": "arm",
     "행정": "politicalscience",
     "햏설수담": "talk",
@@ -26903,4 +26906,130 @@ class DCInsideData {
     "힙합의민족": "vvjk12",
     "힛 더 스테이지": "stage"
   };
+
+  @override
+  bool accept(String name) {
+    return ['디시', '디시인사이드', 'dcinside'].contains(name.replaceAll('.', ''));
+  }
+
+  @override
+  List<BoardInfo> getLists() {
+    var result = List<BoardInfo>();
+
+    result.addAll(ngdata.entries
+        .map((e) => BoardInfo(
+              url: 'https://gall.dcinside.com/board/lists',
+              name: e.key + ' 갤러리',
+              extrainfo: {'id': e.value},
+              extractor: 'dcinside',
+            ))
+        .toList());
+
+    result.addAll(mgdata.entries
+        .map((e) => BoardInfo(
+              url: 'https://gall.dcinside.com/mgallery/board/lists',
+              name: e.key + ' 마이너 갤러리',
+              extrainfo: {'id': e.value},
+              extractor: 'dcinside',
+            ))
+        .toList());
+
+    return result;
+  }
+
+  @override
+  List<String> searchs() {
+    // var rr = new List<BoardInfo>();
+
+    // var max = 10;
+
+    // ngdata.forEach((key, value) {
+    //   if (rr.length >= max) return;
+
+    //   if (key.contains(token))
+    //     rr.add(BoardInfo(
+    //       url: 'https://gall.dcinside.com/board/lists',
+    //       name: key + ' 갤러리',
+    //       extrainfo: {'id': value},
+    //       extractor: 'dcinside',
+    //     ));
+    // });
+
+    // mgdata.forEach((key, value) {
+    //   if (rr.length >= max) return;
+
+    //   if (key.contains(token))
+    //     rr.add(BoardInfo(
+    //       url: 'https://gall.dcinside.com/mgallery/board/lists',
+    //       name: key + ' 마이너 갤러리',
+    //       extrainfo: {'id': value},
+    //       extractor: 'dcinside',
+    //     ));
+    // });
+
+    var rr = List<String>();
+
+    ngdata.forEach((key, value) {
+      rr.add(key);
+    });
+    mgdata.forEach((key, value) {
+      rr.add(key);
+    });
+
+    return rr;
+  }
+
+  @override
+  BoardInfo getBoardFromName(String name) {
+    if (ngdata.containsKey(name)) {
+      return BoardInfo(
+        url: 'https://gall.dcinside.com/board/lists',
+        name: name + ' 갤러리',
+        extrainfo: {'id': ngdata[name]},
+        extractor: 'dcinside',
+      );
+    }
+
+    return BoardInfo(
+      url: 'https://gall.dcinside.com/mgallery/board/lists',
+      name: name + ' 마이너 갤러리',
+      extrainfo: {'id': mgdata[name]},
+      extractor: 'dcinside',
+    );
+  }
+
+  @override
+  List<String> extraOptions() {
+    // set checked default
+    return ['개념글|1|exception_mode|recommend'];
+  }
+
+  @override
+  Future<bool> supportClass(String html) async {
+    var doc = parse(html);
+
+    return doc.querySelector(
+            'html:nth-of-type(1) > body:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(2) > main:nth-of-type(1) > section:nth-of-type(1) > article:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)') !=
+        null;
+  }
+
+  @override
+  Future<List<String>> getClasses(String html) async {
+    var doc = parse(html);
+
+    var ll = List<String>();
+
+    for (int i = 1;; i++) {
+      var header = doc.querySelector(
+          'html:nth-of-type(1) > body:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(2) > main:nth-of-type(1) > section:nth-of-type(1) > article:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type($i) > a:nth-of-type(1)');
+      if (header == null) break;
+      ll.add(header.text.trim() +
+          '|' +
+          'search_head' +
+          '|' +
+          header.attributes['onclick'].split('(').last.split(')').first.trim());
+    }
+
+    return ll;
+  }
 }

@@ -125,6 +125,8 @@ class ArcaLiveParser {
       );
     }
 
+    print(result.length);
+
     return result;
   }
 }

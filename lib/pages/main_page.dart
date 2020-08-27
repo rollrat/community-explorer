@@ -3,19 +3,24 @@
 
 import 'package:communityexplorer/component/board_manager.dart';
 import 'package:communityexplorer/component/interface.dart';
-import 'package:communityexplorer/pages/article_widget.dart';
-import 'package:communityexplorer/pages/left_page.dart';
-import 'package:communityexplorer/pages/right_page.dart';
+import 'package:communityexplorer/pages/article/article_widget.dart';
+import 'package:communityexplorer/pages/left/left_page.dart';
+import 'package:communityexplorer/pages/right/right_page.dart';
 import 'package:communityexplorer/settings/settings.dart';
 import 'package:communityexplorer/widget/inner_drawer.dart';
 import 'package:communityexplorer/widget/toast.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class MainPage extends StatefulWidget {
+  final BoardManager boardManager;
+  final bool disableLeft;
+
+  MainPage(this.boardManager, [this.disableLeft = false]);
+
   @override
   _MainPageState createState() => _MainPageState();
 }
@@ -30,16 +35,34 @@ class _MainPageState extends State<MainPage> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
+  // static MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+  //   keywords: <String>['flutterio', 'beautiful apps'],
+  //   contentUrl: 'https://flutter.dev',
+  //   childDirected: false,
+  //   testDevices: <String>[],
+  // );
+
+  // BannerAd banner = BannerAd(
+  //   adUnitId: BannerAd.testAdUnitId,
+  //   size: AdSize.fullBanner,
+  //   targetingInfo: targetingInfo,
+  //   // listener: (MobileAdEvent event) {
+  //   //   print("$event");
+  //   // },
+  // );
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    // banner
+    //   ..load()
+    //   ..show(
+    //     anchorType: AnchorType.bottom,
+    //   );
     Future.delayed(Duration(milliseconds: 100)).then((value) async {
-      var board = Provider.of<BoardManager>(context);
       try {
-        // articles = await widget.boardManager.init();
-        articles = Provider.of<BoardManager>(context).getArticles();
+        articles = await widget.boardManager.init();
       } catch (e, st) {
         print(e);
         print(st);
@@ -47,7 +70,7 @@ class _MainPageState extends State<MainPage> {
       // articles.forEach((element) {
       // print(element.title);
       // });
-      if (board.hasInitError) {
+      if (widget.boardManager.hasInitError) {
         FlutterToast(context).showToast(
           child: ToastWrapper(
             isCheck: false,
@@ -139,15 +162,18 @@ class _MainPageState extends State<MainPage> {
       //   width: 10,
       // ), // required if rightChild is not set
       rightChild: RightPage(
+        boardManager: widget.boardManager,
         updateMain: () => setState(() {}),
       ),
-      leftChild: LeftPage(
-        updateMain: () => setState(() {
-          widget.boardManager.tidy();
-          articles = widget.boardManager.getArticles();
-        }),
-        boardManager: widget.boardManager,
-      ),
+      leftChild: widget.disableLeft
+          ? null
+          : LeftPage(
+              updateMain: () => setState(() {
+                widget.boardManager.tidy();
+                articles = widget.boardManager.getArticles();
+              }),
+              boardManager: widget.boardManager,
+            ),
 
       //  A Scaffold is generally used but you are free to use other widgets
       // Note: use "automaticallyImplyLeading: false" if you do not personalize "leading" of Bar
@@ -185,6 +211,7 @@ class _MainPageState extends State<MainPage> {
                       key: ValueKey(articles[i].url),
                       articleInfo: articles[i],
                       viewType: Settings.viewType,
+                      boardManager: widget.boardManager,
                     ),
                     // itemExtent: 50.0,
                     itemCount: articles.length,
