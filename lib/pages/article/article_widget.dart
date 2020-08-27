@@ -279,11 +279,12 @@ class _ArticleWidgetState extends State<ArticleWidget> {
                   builder: (context) => ViewPage(
                         url: url,
                         color: extractor.color(),
-                        extractor: extractor.extractor(),
+                        extractor: extractor,
                         boardManager: widget.boardManager,
                         articleInfo: widget.articleInfo,
                       )),
             );
+            scraped = widget.boardManager.isScrapred(widget.articleInfo.url);
             setState(() {
               viewed = true;
             });
