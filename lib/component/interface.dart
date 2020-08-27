@@ -4,6 +4,8 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:communityexplorer/download/download_task.dart';
+
 abstract class BoardExtractor {
   bool acceptURL(String url);
   Future<String> tidyURL(String url);
@@ -14,6 +16,7 @@ abstract class BoardExtractor {
   Future<PageInfo> next(BoardInfo board, int offset);
   List<BoardInfo> best();
   String toMobile(String url);
+  Future<List<DownloadTask>> extractMedia(String url);
 }
 
 class BoardInfo {

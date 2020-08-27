@@ -10,6 +10,7 @@ import 'package:communityexplorer/component/dcinside/dcinside_parser.dart';
 import 'package:communityexplorer/component/fmkorea/fmkorea_parser.dart';
 import 'package:communityexplorer/component/huvkr/huvkr_parser.dart';
 import 'package:communityexplorer/component/interface.dart';
+import 'package:communityexplorer/download/download_task.dart';
 import 'package:communityexplorer/network/wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -112,4 +113,7 @@ class FMKoreaExtractor extends BoardExtractor {
   String toMobile(String url) {
     return url;
   }
+
+  @override
+  Future<List<DownloadTask>> extractMedia(String url) async {}
 }

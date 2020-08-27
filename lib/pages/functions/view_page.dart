@@ -46,7 +46,17 @@ class _ViewPageState extends State<ViewPage> {
             new IconButton(
               icon: new Icon(MdiIcons.download),
               tooltip: '다운로드',
-              onPressed: () => {},
+              onPressed: () {
+                FlutterToast(context).showToast(
+                  child: ToastWrapper(
+                    isCheck: false,
+                    isWarning: false,
+                    msg: '금지된 작업입니다.',
+                  ),
+                  gravity: ToastGravity.BOTTOM,
+                  toastDuration: Duration(seconds: 4),
+                );
+              },
             ),
             new IconButton(
               icon: new Icon(MdiIcons.alert),

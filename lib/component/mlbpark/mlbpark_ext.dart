@@ -118,4 +118,7 @@ class MLBParkExtractor extends BoardExtractor {
   String toMobile(String url) {
     return url;
   }
+
+  @override
+  Future<List<DownloadTask>> extractMedia(String url) async {}
 }
