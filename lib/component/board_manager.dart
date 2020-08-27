@@ -13,6 +13,8 @@ import 'package:communityexplorer/log/log.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
+// 이 클래스는 그룹에 관한 정보를 가지고있다
+// 따로 분리한 이유는 '이 게시판만 열기' 기능을 구현하려고 했기 떄문이다
 class BoardFixed {
   List<ArticleInfo> _scraps = List<ArticleInfo>();
   HashSet<String> _scrapURLS = HashSet<String>();
@@ -118,19 +120,14 @@ class BoardFixed {
 }
 
 // Board Session
+// 보드를 관리한다
+// 보드는 실시간으로 불러올 게시글들의 모음이다
 class BoardManager {
-  // static BoardManager instance = BoardManager();
-
   BoardGroup _group;
   BoardFixed _fixed;
-  // List<BoardInfo> _dl = List<BoardInfo>();
   List<ArticleInfo> _articles = List<ArticleInfo>();
   PriorityQueue<ArticleInfo> _queue =
       PriorityQueue<ArticleInfo>((a, b) => b.writeTime.compareTo(a.writeTime));
-  // List<ArticleInfo> _scraps = List<ArticleInfo>();
-  // HashSet<String> _scrapURLS = HashSet<String>();
-  // List<ArticleInfo> _record = List<ArticleInfo>();
-  // List<String> _filter = List<String>();
 
   bool hasInitError = false;
 
@@ -171,65 +168,6 @@ class BoardManager {
     await Hive.box("filter").put('global', filtert == null ? '[]' : filtert);
   }
 
-  // static void test() {
-  //   // instance.registerBoard(BoardInfo(
-  //   //   url: 'https://gall.dcinside.com/board/lists',
-  //   //   name: '국내야구 갤러리',
-  //   //   extrainfo: {'id': 'baseball_new9', 'exception_mode': 'recommend'},
-  //   //   extractor: 'dcinside',
-  //   // ));
-  //   // instance.registerBoard(BoardInfo(
-  //   //   url: 'https://gall.dcinside.com/mgallery/board/lists',
-  //   //   name: '중세게임 마이너 갤러리',
-  //   //   extrainfo: {'id': 'aoegame', 'exception_mode': 'recommend'},
-  //   //   extractor: 'dcinside',
-  //   // ));
-  //   // instance.registerBoard(BoardInfo(
-  //   //   url: 'https://gall.dcinside.com/board/lists',
-  //   //   name: '초개념 갤러리',
-  //   //   extrainfo: {'id': 'superidea'},
-  //   //   extractor: 'dcinside',
-  //   // ));
-  //   // instance.registerBoard(BoardInfo(
-  //   //   url: 'http://web.humoruniv.com/board/humor/list.html',
-  //   //   name: '웃긴자료',
-  //   //   extrainfo: {'table': 'pds'},
-  //   //   extractor: 'huvkr',
-  //   // ));
-  //   // instance.registerBoard(BoardInfo(
-  //   //   url: 'https://arca.live/b/hk3rd',
-  //   //   name: '붕괴3rd 채널',
-  //   //   extrainfo: {'mode': 'best'},
-  //   //   extractor: 'arcalive',
-  //   // ));
-  //   // instance.registerBoard(BoardInfo(
-  //   //   url: 'https://arca.live/b/nymphet',
-  //   //   name: '님페트 채널',
-  //   //   extrainfo: {},
-  //   //   extractor: 'arcalive',
-  //   // ));
-  //   // instance.registerBoard(BoardInfo(
-  //   //   url: 'https://bbs.ruliweb.com/best/humor/hit',
-  //   //   name: '유머 힛갤',
-  //   //   extrainfo: {},
-  //   //   extractor: 'ruliweb',
-  //   // ));
-  //   // instance.registerBoard(BoardInfo(
-  //   //   url: 'https://bbs.ruliweb.com/community/board/300148',
-  //   //   name: '정치유머 게시판',
-  //   //   extrainfo: {'view_best': '1'},
-  //   //   extractor: 'ruliweb',
-  //   // ));
-  //   // instance.registerBoard(BoardInfo(
-  //   //   url: 'https://www.clien.net/service/group/clien_all',
-  //   //   // url: 'https://www.clien.net/service/board/park',
-  //   //   name: '톺아보기',
-  //   //   extrainfo: {'od': 'T33'},
-  //   //   // extrainfo: {},
-  //   //   extractor: 'clien',
-  //   // ));
-  // }
-
   String getName() {
     var s = _group.name.split('|');
     if (s.length > 1) s.removeLast();
@@ -247,12 +185,6 @@ class BoardManager {
   Future<void> _initGroup(String group) async {
     var groupt = Hive.box('groups')
         .get(base64.encode(utf8.encode(group)), defaultValue: '');
-    // var scrapt = Hive.box('scraps')
-    //     .get(base64.encode(utf8.encode(group)), defaultValue: '[]');
-    // var recordt = Hive.box('record')
-    //     .get(base64.encode(utf8.encode(group)), defaultValue: '[]');
-    // var filtert = Hive.box('filter')
-    //     .get(base64.encode(utf8.encode(group)), defaultValue: '[]');
     if (group == '구독' && groupt == '') {
       _group = BoardGroup(
         boards: List<BoardInfo>(),
@@ -262,36 +194,10 @@ class BoardManager {
         subGroups: List<SubGroupInfo>(),
       );
       await saveGroup();
-      // return;
     }
-    // if (scrapt == '') {
-    //   _scraps = List<ArticleInfo>();
-    //   await saveScrap();
-    // }
-    // if (recordt == '') {
-    //   _record = List<ArticleInfo>();
-    //   await saveRecord();
-    // }
-    // if (recordt == '') {
-    //   _record = List<ArticleInfo>();
-    //   await saveRecord();
-    // }
-    // if (filtert == '') {
-    //   _filter = List<String>();
-    //   await saveFilter();
-    // }
     if (groupt == '') return;
 
     _group = BoardGroup.fromMap(jsonDecode(groupt) as Map<String, dynamic>);
-    // _scraps = (jsonDecode(scrapt) as List<dynamic>)
-    //     .map((e) => ArticleInfo.fromMap(e as Map<String, dynamic>))
-    //     .toList();
-    // _record = (jsonDecode(recordt) as List<dynamic>)
-    //     .map((e) => ArticleInfo.fromMap(e as Map<String, dynamic>))
-    //     .toList();
-    // _filter =
-    //     (jsonDecode(filtert) as List<dynamic>).map((e) => e as String).toList();
-    // _scrapURLS.addAll(_scraps.map((e) => e.url));
   }
 
   Future<void> saveGroup() async {
@@ -300,32 +206,6 @@ class BoardManager {
         .put(base64.encode(utf8.encode(_group.name)), groupt);
   }
 
-  // Future<void> saveScrap() async {
-  //   var scrapt = jsonEncode(_scraps.map((e) => e.toMap()).toList());
-  //   await Hive.box("scraps").put(base64.encode(utf8.encode(_group.name)),
-  //       scrapt == null ? '[]' : scrapt);
-  // }
-
-  // Future<void> saveRecord() async {
-  //   var recordt = jsonEncode(_record.map((e) => e.toMap()).toList());
-  //   await Hive.box("record").put(base64.encode(utf8.encode(_group.name)),
-  //       recordt == null ? '[]' : recordt);
-  // }
-
-  // Future<void> saveFilter() async {
-  //   var filtert = jsonEncode(_filter);
-  //   await Hive.box("filter").put(base64.encode(utf8.encode(_group.name)),
-  //       filtert == null ? '[]' : filtert);
-  // }
-
-  // void registerBoard(BoardInfo info) {
-  //   _dl.add(info);
-  // }
-
-  // void registerBoards(List<BoardInfo> info) {
-  //   _dl.addAll(info);
-  // }
-
   List<BoardInfo> getBoards() {
     return _group.boards;
   }
@@ -333,49 +213,6 @@ class BoardManager {
   List<SubGroupInfo> getSubGroups() {
     return _group.subGroups;
   }
-
-  // List<ArticleInfo> getScraps() {
-  //   return _scraps;
-  // }
-
-  // List<ArticleInfo> getRecord() {
-  //   return _record;
-  // }
-
-  // List<String> getFilter() {
-  //   return _filter;
-  // }
-
-  // Future<void> addScrap(ArticleInfo articleInfo) async {
-  //   _scraps.add(articleInfo);
-  //   _scrapURLS.add(articleInfo.url);
-  //   await saveScrap();
-  // }
-
-  // Future<void> removeScrap(ArticleInfo articleInfo) async {
-  //   _scraps.removeWhere((element) => element.url == articleInfo.url);
-  //   _scrapURLS.remove(articleInfo.url);
-  //   await saveScrap();
-  // }
-
-  // bool isScrapred(String url) {
-  //   return _scrapURLS.contains(url);
-  // }
-
-  // Future<void> addFilter(String filt) async {
-  //   _filter.add(filt);
-  //   await saveFilter();
-  // }
-
-  // Future<void> removeFilter(String filt) async {
-  //   _filter.removeWhere((element) => element == filt);
-  //   await saveFilter();
-  // }
-
-  // Future<void> addRecord(ArticleInfo articleInfo) async {
-  //   _record.add(articleInfo);
-  //   await saveRecord();
-  // }
 
   Future<void> deleteBoard(BoardInfo board) async {
     _group.boards.remove(board);
@@ -398,6 +235,10 @@ class BoardManager {
   List<ArticleInfo> getArticles() {
     return _filterted();
   }
+
+  //
+  // 아래부터는 Pagination을 위한 로직
+  //
 
   Future<List<ArticleInfo>> init() async {
     _articles = List<ArticleInfo>();

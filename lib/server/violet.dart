@@ -6,6 +6,8 @@ import 'dart:math';
 
 import 'package:communityexplorer/network/wrapper.dart';
 
+// xc는 서버에서 정상적인 제출인지를 확인하기 위해 사용한다.
+// 위치랜덤까지 적용하려했지만 귀찮아서...
 class Violet {
   static String surl = 'http://asdf54as06d5f40asdfasd5f6a0s.com';
   // static String surl = 'http://127.0.0.1';

@@ -197,7 +197,6 @@ class _CreateSubscribePageState extends State<CreateSubscribePage> {
               )
               .toList(),
           onChanged: (value) {
-            print(value);
             _selectedData = ComponentManager.instance.getDataFromName(value);
             _searchs = _selectedData.searchs();
             if (_searchs == null)

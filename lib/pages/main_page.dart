@@ -67,9 +67,6 @@ class _MainPageState extends State<MainPage> {
         print(e);
         print(st);
       }
-      // articles.forEach((element) {
-      // print(element.title);
-      // });
       if (widget.boardManager.hasInitError) {
         FlutterToast(context).showToast(
           child: ToastWrapper(
@@ -86,9 +83,6 @@ class _MainPageState extends State<MainPage> {
   }
 
   void _onRefresh() async {
-    // monitor network fetch
-    // await Future.delayed(Duration(milliseconds: 1000));
-    // if failed,use refreshFailed()
     try {
       articles = await widget.boardManager.refresh();
     } catch (e) {
@@ -99,10 +93,6 @@ class _MainPageState extends State<MainPage> {
   }
 
   void _onLoading() async {
-    // monitor network fetch
-    // await Future.delayed(Duration(milliseconds: 1000));
-    // if failed,use loadFailed(),if no data return,use LoadNodata()
-    // items.add((items.length + 1).toString());
     try {
       articles = await widget.boardManager.next();
     } catch (e) {
@@ -122,45 +112,24 @@ class _MainPageState extends State<MainPage> {
 
     return InnerDrawer(
       key: _innerDrawerKey,
-      onTapClose: true, // default false
-      swipe: true, // default true
-      // colorTransitionChild: Colors.cyan, // default Color.black54
-      colorTransitionScaffold: Colors.black12, // default Color.black54
-
-      //When setting the vertical offset, be sure to use only top or bottom
+      onTapClose: true,
+      swipe: true,
+      colorTransitionScaffold: Colors.black12,
       offset: IDOffset.only(
         bottom: 0.00,
         left: (width - 160) / width,
         right: (width - 60) / width,
       ),
-
-      scale: IDOffset.horizontal(1.0), // set the offset in both directions
-      // leftOff
-
-      proportionalChildArea: false, // default true
-      borderRadius: 0, // default 0
-      rightAnimationType: InnerDrawerAnimation.static, // default static
+      scale: IDOffset.horizontal(1.0),
+      proportionalChildArea: false,
+      borderRadius: 0,
+      rightAnimationType: InnerDrawerAnimation.static,
       leftAnimationType: InnerDrawerAnimation.linear,
       backgroundDecoration: BoxDecoration(
           color: Settings.themeWhat
               ? Colors.grey.shade900.withOpacity(0.4)
-              : Colors.grey.shade200.withOpacity(
-                  0.4)), // default  Theme.of(context).backgroundColor
-
-      //when a pointer that is in contact with the screen and moves to the right or left
-      onDragUpdate: (double val, InnerDrawerDirection direction) {
-        // return values between 1 and 0
-        // print(val);
-        // check if the swipe is to the right or to the left
-        // print(direction == InnerDrawerDirection.start);
-        // return direction == InnerDrawerDirection.end;
-      },
-
-      // innerDrawerCallback: (a) =>
-      //     print(a), // return  true (open) or false (close)
-      // leftChild: Container(
-      //   width: 10,
-      // ), // required if rightChild is not set
+              : Colors.grey.shade200.withOpacity(0.4)),
+      onDragUpdate: (double val, InnerDrawerDirection direction) {},
       rightChild: RightPage(
         boardManager: widget.boardManager,
         updateMain: () => setState(() {}),
@@ -174,9 +143,6 @@ class _MainPageState extends State<MainPage> {
               }),
               boardManager: widget.boardManager,
             ),
-
-      //  A Scaffold is generally used but you are free to use other widgets
-      // Note: use "automaticallyImplyLeading: false" if you do not personalize "leading" of Bar
       scaffold: Scaffold(
         body: articles == null
             ? Container()
@@ -186,7 +152,6 @@ class _MainPageState extends State<MainPage> {
                   enablePullDown: true,
                   enablePullUp: true,
                   header: ClassicHeader(
-                    // decoration: BoxDecoration(color: Colors.white),
                     refreshingText: '가져오는 중...',
                     completeText: '',
                     idleText: '새로고침하려면 당기세요',
@@ -205,7 +170,6 @@ class _MainPageState extends State<MainPage> {
                   onRefresh: _onRefresh,
                   onLoading: _onLoading,
                   child: ListView.separated(
-                    // physics: BouncingScrollPhysics(),
                     addAutomaticKeepAlives: false,
                     itemBuilder: (c, i) => ArticleWidget(
                       key: ValueKey(articles[i].url),

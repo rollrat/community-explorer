@@ -25,6 +25,7 @@ import 'dart:io' show Platform;
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+// Crashlytics랑 연동하자.
 void err(FlutterErrorDetails details) {
   Logger.error('[Unhandled] MSG: ' +
       details.exception.toString() +

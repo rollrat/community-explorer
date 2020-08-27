@@ -16,6 +16,7 @@ abstract class BoardExtractor {
   Future<PageInfo> next(BoardInfo board, int offset);
   List<BoardInfo> best();
   String toMobile(String url);
+  // 게시글에서 모든 영상파일 추출
   Future<List<DownloadTask>> extractMedia(String url);
 }
 
@@ -218,7 +219,9 @@ abstract class BoardData {
   List<BoardInfo> getLists();
   List<String> searchs();
   BoardInfo getBoardFromName(String name);
+  // URL 쿼리 부가옵션 정보들을 가져옵니다.
   List<String> extraOptions();
+  // 클래스/말머리/카테고리를 사용할 수 있는 게시판인지 확인합니다.
   Future<bool> supportClass(String html);
   Future<List<String>> getClasses(String html);
 }

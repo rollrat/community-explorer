@@ -1,3 +1,6 @@
+// 기존 InnerDrawer는 무조건 50% 이상의 너비만 지원한다.
+// 이 문제를 해결하기 위해 소스코드를 통채로 포팅했다.
+
 // InnerDrawer is based on Drawer.
 // The source code of the Drawer has been re-adapted for Inner Drawer.
 

@@ -69,6 +69,8 @@ class NativeDownloadTask {
   }
 }
 
+// Java, Object-C 네이티브가 아니라
+// arm, aarch64, x86으로 컴파일된 네이티브 머신코드를 이용해 다운로드한다.
 class NativeDownloader {
   DynamicLibrary libviolet;
   DownloaderInit downloaderInit;
@@ -84,6 +86,8 @@ class NativeDownloader {
       const MethodChannel('xyz.violet.communityexplorer/nativelibdir');
   static Directory nativeDir;
 
+  // 안드로이드 29이상부터는 외부 바이너리를 실행할 수 없다.
+  // 네이티브 다운로더를 실행하기 위해 jniLibs 폴더에 있는 파일을 찾아야한다.
   static Future<Directory> getLibraryDirectory() async {
     if (nativeDir != null) return nativeDir;
     final String result = await platform.invokeMethod('getNativeDir');
@@ -127,6 +131,7 @@ class NativeDownloader {
 
   NativeDownloader() {
     Future.delayed(Duration(seconds: 1)).then((value) async {
+      // 폴링으로 구현함
       while (true) {
         var x = Utf8.fromUtf8(downloaderStatus());
         var ll = x.split('|');

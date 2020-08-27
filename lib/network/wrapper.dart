@@ -14,6 +14,8 @@ class HttpWrapper {
   static String mobileUserAgent =
       "Mozilla/5.0 (Android 7.0; Mobile; rv:54.0) Gecko/54.0 Firefox/54.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.125 Mobile Safari/603.2.4";
 
+  // 오류 처리를 간단하게 하기 위해 랩핑했다.
+
   static Future<http.Response> getr(String url,
       {Map<String, String> headers}) async {
     // Logger.info('[Http Request] GET: ' + url);

@@ -55,6 +55,7 @@ class DownloadTask {
   });
 }
 
+// YoutubeDL과 비슷한 경로 시스템을 지원하기 위한 클래스
 class FileNameFormat {
   final String board;
   final String title;
