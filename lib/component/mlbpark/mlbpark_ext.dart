@@ -11,6 +11,7 @@ import 'package:communityexplorer/component/fmkorea/fmkorea_parser.dart';
 import 'package:communityexplorer/component/huvkr/huvkr_parser.dart';
 import 'package:communityexplorer/component/interface.dart';
 import 'package:communityexplorer/component/mlbpark/mlbpark_parser.dart';
+import 'package:communityexplorer/download/download_task.dart';
 import 'package:communityexplorer/network/wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;

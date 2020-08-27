@@ -6,7 +6,9 @@ import 'dart:convert';
 
 import 'package:communityexplorer/component/dcinside/dcinside_parser.dart';
 import 'package:communityexplorer/component/interface.dart';
+import 'package:communityexplorer/download/download_task.dart';
 import 'package:communityexplorer/network/wrapper.dart';
+import 'package:communityexplorer/other/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -136,5 +138,47 @@ class DCInsideExtractor extends BoardExtractor {
   @override
   String toMobile(String url) {
     return url;
+  }
+
+  @override
+  Future<List<DownloadTask>> extractMedia(String url) async {
+    var match = urlMatcher.allMatches(url);
+
+    var ismobile = match.first[1] == 'm';
+    if (ismobile) {
+      var request = await HttpWrapper.post(url);
+      url = request.headers['location'];
+      match = urlMatcher.allMatches(url);
+    }
+
+    var isminor = match.first[2] != null && match.first[2].contains('mgallery');
+    var isview = match.first[3].contains('view'); // not support lists
+
+    var result = List<DownloadTask>();
+
+    if (isview) {
+      var g = DCInsideParser.parseBoardView((await HttpWrapper.getr(url)).body);
+
+      for (int i = 0; i < g['il'].length; i++) {
+        var fn = g['fn'][i];
+        result.add(
+          DownloadTask(
+            url: g['il'][i],
+            filename: fn,
+            referer: url,
+            format: FileNameFormat(
+              id: g['id'],
+              gallery: g['name'],
+              title: g['title'],
+              filenameWithoutExtension: Utils.intToString(i, pad: 3),
+              extension: fn.split('.').last,
+              extractor: 'dcinside',
+            ),
+          ),
+        );
+      }
+    }
+
+    return result;
   }
 }

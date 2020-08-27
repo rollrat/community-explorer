@@ -10,6 +10,7 @@ import 'package:communityexplorer/component/interface.dart';
 import 'package:communityexplorer/component/ruliweb/ruliweb_parser.dart';
 import 'package:communityexplorer/download/download_task.dart';
 import 'package:communityexplorer/network/wrapper.dart';
+import 'package:communityexplorer/other/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -124,5 +125,37 @@ class RuliwebExtractor extends BoardExtractor {
   }
 
   @override
-  Future<List<DownloadTask>> extractMedia(String url) async {}
+  Future<List<DownloadTask>> extractMedia(String url) async {
+    var match = urlMatcher.allMatches(url);
+
+    if (match.first[1] == 'm') url = url.replaceFirst('bbs.', 'm.');
+
+    var result = List<DownloadTask>();
+
+    var g = RuliwebParser.parseArticle((await HttpWrapper.getr(url, headers: {
+      'Referer': url,
+      'User-Agent': HttpWrapper.userAgent,
+      'Accept': HttpWrapper.accept,
+    }))
+        .body);
+
+    for (int i = 0; i < g['links'].length; i++) {
+      result.add(
+        DownloadTask(
+          url: g['links'][i],
+          // filename: fn,
+          referer: url.replaceAll('/img/', '/ori/'),
+          format: FileNameFormat(
+            board: g['board'],
+            title: g['title'],
+            filenameWithoutExtension: Utils.intToString(i, pad: 3),
+            extension: g['links'][i].split('?')[0].split('.').last,
+            extractor: 'ruliweb',
+          ),
+        ),
+      );
+    }
+
+    return result;
+  }
 }

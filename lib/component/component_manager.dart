@@ -7,6 +7,9 @@ import 'package:communityexplorer/component/clien/clien_data.dart';
 import 'package:communityexplorer/component/clien/clien_ext.dart';
 import 'package:communityexplorer/component/dcinside/dcinside_data.dart';
 import 'package:communityexplorer/component/dcinside/dcinside_ext.dart';
+import 'package:communityexplorer/component/dogdrip/dogdrip_data.dart';
+import 'package:communityexplorer/component/dogdrip/dogdrip_ext.dart';
+import 'package:communityexplorer/component/dogdrip/dogdrip_parser.dart';
 import 'package:communityexplorer/component/fmkorea/fmkorea_data.dart';
 import 'package:communityexplorer/component/fmkorea/fmkorea_ext.dart';
 import 'package:communityexplorer/component/huvkr/huvkr_data.dart';
@@ -36,6 +39,7 @@ class ComponentManager {
       FMKoreaExtractor(),
       MLBParkExtractor(),
       InstizExtractor(),
+      DogDripExtractor(),
     ];
     _dd = [
       DCInsideData(),
@@ -46,6 +50,7 @@ class ComponentManager {
       FMKoreaData(),
       MLBParkData(),
       InstizData(),
+      DogDripData(),
     ];
   }
 

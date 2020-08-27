@@ -144,4 +144,36 @@ class DCInsideParser {
 
     return result;
   }
+
+  static Map<String, dynamic> parseBoardView(String html) {
+    var doc = parse(html).querySelector('div.view_content_wrap');
+
+    var id =
+        RegExp(r'name="gallery_no" value="(\d+)"').allMatches(html).first[1];
+    var name = RegExp(r'<h4 class="block_gallname">\[(.*?) ')
+        .allMatches(html)
+        .first[1];
+    var title = doc.querySelector('span.title_subject').text;
+    var imagelink = List<String>();
+    var filename = List<String>();
+
+    try {
+      imagelink = doc
+          .querySelectorAll('ul.appending_file > li')
+          .map((e) => e.querySelector('a').attributes['href'])
+          .toList();
+      filename = doc
+          .querySelectorAll('ul.appending_file > li')
+          .map((e) => e.querySelector('a').text)
+          .toList();
+    } catch (e) {}
+
+    return {
+      'id': id,
+      'name': name,
+      'title': title,
+      'il': imagelink,
+      'fn': filename
+    };
+  }
 }

@@ -65,6 +65,8 @@ class ArcaLiveParser {
         if (node == null) break;
       }
 
+      // print(node.innerHtml);
+
       var no = node
           .querySelector('div:nth-of-type(1) > span:nth-of-type(1)')
           .text
@@ -128,5 +130,49 @@ class ArcaLiveParser {
     print(result.length);
 
     return result;
+  }
+
+  static Map<String, dynamic> parseArticle(String html) {
+    var doc = parse(html);
+
+    var channel = doc
+        .querySelector(
+            'html > body > div:nth-of-type(1) > div:nth-of-type(3) > article:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1)')
+        .text
+        .trim();
+    var title = doc
+        .querySelector(
+            'html > body > div:nth-of-type(1) > div:nth-of-type(3) > article:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)')
+        .text
+        .trim();
+    var body = doc.querySelector(
+        'html > body > div:nth-of-type(1) > div:nth-of-type(3) > article:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(2)');
+
+    var links = List<String>();
+
+    var imgs = body.querySelectorAll('img');
+    var videos = body.querySelectorAll('video');
+
+    try {
+      if (imgs != null) {
+        links.addAll(
+            imgs.map((e) => 'https:' + e.attributes['src'] + '?type=orig'));
+      }
+      if (videos != null) {
+        links.addAll(videos.map((e) {
+          if (e.attributes['data-orig'] == 'gif')
+            return 'https:' + e.attributes['src'] + '.gif?type=orig';
+          return 'https:' + e.attributes['src'] + '?type=orig';
+        }));
+      }
+    } catch (e) {
+      // print(e);
+    }
+
+    return {
+      'channel': channel,
+      'title': title,
+      'links': links,
+    };
   }
 }

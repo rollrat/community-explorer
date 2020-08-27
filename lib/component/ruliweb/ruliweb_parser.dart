@@ -175,4 +175,48 @@ class RuliwebParser {
 
     return result;
   }
+
+  static Map<String, dynamic> parseArticle(String html) {
+    var doc = parse(html);
+
+    var title = doc
+        .querySelector(
+            '/html[1]/body[1]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/h4[1]/span[1]'
+                .toQureySelector())
+        .text
+        .trim();
+    var board = doc
+        .querySelector(
+            '/html[1]/body[1]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/h3[1]/a[1]'
+                .toQureySelector())
+        .text
+        .trim();
+    var body = doc.querySelector(
+        '/html[1]/body[1]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[2]/div[1]/div[2]/div[2]'
+            .toQureySelector());
+
+    var links = List<String>();
+
+    var imgs = body.querySelectorAll('img');
+    var videos = body.querySelectorAll('video');
+
+    try {
+      if (imgs != null) {
+        links.addAll(imgs.map((e) => 'https:' + e.attributes['src']));
+      }
+      if (videos != null) {
+        links.addAll(videos.map((e) {
+          return 'https:' + e.attributes['src'];
+        }));
+      }
+    } catch (e) {
+      // print(e);
+    }
+
+    return {
+      'board': board,
+      'title': title,
+      'links': links,
+    };
+  }
 }

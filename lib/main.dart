@@ -75,6 +75,18 @@ void main() async {
 
   var gg = await BoardManager.get('구독');
 
+  if (DateTime.now().isAfter(DateTime(2020, 8, 31))) {
+    return;
+  }
+
+  if ((await http.get(
+              'https://raw.githubusercontent.com/rollrat/vce-limit/master/set'))
+          .body
+          .trim() !=
+      '0') {
+    return;
+  }
+
   runApp(
     DynamicTheme(
       defaultBrightness: Brightness.light,

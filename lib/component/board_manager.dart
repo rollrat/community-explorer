@@ -13,24 +13,132 @@ import 'package:communityexplorer/log/log.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
-class BoardManager {
-  // static BoardManager instance = BoardManager();
-
-  BoardGroup _group;
-  // List<BoardInfo> _dl = List<BoardInfo>();
-  List<ArticleInfo> _articles = List<ArticleInfo>();
-  PriorityQueue<ArticleInfo> _queue =
-      PriorityQueue<ArticleInfo>((a, b) => b.writeTime.compareTo(a.writeTime));
+class BoardFixed {
   List<ArticleInfo> _scraps = List<ArticleInfo>();
   HashSet<String> _scrapURLS = HashSet<String>();
   List<ArticleInfo> _record = List<ArticleInfo>();
   List<String> _filter = List<String>();
+  String name;
+
+  BoardFixed(String name) {
+    this.name = name;
+  }
+
+  Future<void> initFixed() async {
+    var scrapt = Hive.box('scraps')
+        .get(base64.encode(utf8.encode(name)), defaultValue: '[]');
+    var recordt = Hive.box('record')
+        .get(base64.encode(utf8.encode(name)), defaultValue: '[]');
+    var filtert = Hive.box('filter')
+        .get(base64.encode(utf8.encode(name)), defaultValue: '[]');
+    if (scrapt == '') {
+      _scraps = List<ArticleInfo>();
+      await saveScrap();
+    }
+    if (recordt == '') {
+      _record = List<ArticleInfo>();
+      await saveRecord();
+    }
+    if (filtert == '') {
+      _filter = List<String>();
+      await saveFilter();
+    }
+
+    _scraps = (jsonDecode(scrapt) as List<dynamic>)
+        .map((e) => ArticleInfo.fromMap(e as Map<String, dynamic>))
+        .toList();
+    _record = (jsonDecode(recordt) as List<dynamic>)
+        .map((e) => ArticleInfo.fromMap(e as Map<String, dynamic>))
+        .toList();
+    _filter =
+        (jsonDecode(filtert) as List<dynamic>).map((e) => e as String).toList();
+    _scrapURLS.addAll(_scraps.map((e) => e.url));
+  }
+
+  Future<void> saveScrap() async {
+    var scrapt = jsonEncode(_scraps.map((e) => e.toMap()).toList());
+    await Hive.box("scraps")
+        .put(base64.encode(utf8.encode(name)), scrapt == null ? '[]' : scrapt);
+  }
+
+  Future<void> saveRecord() async {
+    var recordt = jsonEncode(_record.map((e) => e.toMap()).toList());
+    await Hive.box("record").put(
+        base64.encode(utf8.encode(name)), recordt == null ? '[]' : recordt);
+  }
+
+  Future<void> saveFilter() async {
+    var filtert = jsonEncode(_filter);
+    await Hive.box("filter").put(
+        base64.encode(utf8.encode(name)), filtert == null ? '[]' : filtert);
+  }
+
+  List<ArticleInfo> getScraps() {
+    return _scraps;
+  }
+
+  List<ArticleInfo> getRecord() {
+    return _record;
+  }
+
+  List<String> getFilter() {
+    return _filter;
+  }
+
+  Future<void> addScrap(ArticleInfo articleInfo) async {
+    _scraps.add(articleInfo);
+    _scrapURLS.add(articleInfo.url);
+    await saveScrap();
+  }
+
+  Future<void> removeScrap(ArticleInfo articleInfo) async {
+    _scraps.removeWhere((element) => element.url == articleInfo.url);
+    _scrapURLS.remove(articleInfo.url);
+    await saveScrap();
+  }
+
+  bool isScrapred(String url) {
+    return _scrapURLS.contains(url);
+  }
+
+  Future<void> addFilter(String filt) async {
+    _filter.add(filt);
+    await saveFilter();
+  }
+
+  Future<void> removeFilter(String filt) async {
+    _filter.removeWhere((element) => element == filt);
+    await saveFilter();
+  }
+
+  Future<void> addRecord(ArticleInfo articleInfo) async {
+    _record.add(articleInfo);
+    await saveRecord();
+  }
+}
+
+// Board Session
+class BoardManager {
+  // static BoardManager instance = BoardManager();
+
+  BoardGroup _group;
+  BoardFixed _fixed;
+  // List<BoardInfo> _dl = List<BoardInfo>();
+  List<ArticleInfo> _articles = List<ArticleInfo>();
+  PriorityQueue<ArticleInfo> _queue =
+      PriorityQueue<ArticleInfo>((a, b) => b.writeTime.compareTo(a.writeTime));
+  // List<ArticleInfo> _scraps = List<ArticleInfo>();
+  // HashSet<String> _scrapURLS = HashSet<String>();
+  // List<ArticleInfo> _record = List<ArticleInfo>();
+  // List<String> _filter = List<String>();
 
   bool hasInitError = false;
 
   static Future<BoardManager> get(String groupName) async {
     var bm = BoardManager();
-    bm._initGroup(groupName);
+    await bm._initGroup(groupName);
+    bm._fixed = BoardFixed(groupName);
+    await bm._fixed.initFixed();
     return bm;
   }
 
@@ -131,12 +239,12 @@ class BoardManager {
   Future<void> _initGroup(String group) async {
     var groupt = Hive.box('groups')
         .get(base64.encode(utf8.encode(group)), defaultValue: '');
-    var scrapt = Hive.box('scraps')
-        .get(base64.encode(utf8.encode(group)), defaultValue: '[]');
-    var recordt = Hive.box('record')
-        .get(base64.encode(utf8.encode(group)), defaultValue: '[]');
-    var filtert = Hive.box('filter')
-        .get(base64.encode(utf8.encode(group)), defaultValue: '[]');
+    // var scrapt = Hive.box('scraps')
+    //     .get(base64.encode(utf8.encode(group)), defaultValue: '[]');
+    // var recordt = Hive.box('record')
+    //     .get(base64.encode(utf8.encode(group)), defaultValue: '[]');
+    // var filtert = Hive.box('filter')
+    //     .get(base64.encode(utf8.encode(group)), defaultValue: '[]');
     if (group == '구독' && groupt == '') {
       _group = BoardGroup(
         boards: List<BoardInfo>(),
@@ -148,34 +256,34 @@ class BoardManager {
       await saveGroup();
       // return;
     }
-    if (scrapt == '') {
-      _scraps = List<ArticleInfo>();
-      await saveScrap();
-    }
-    if (recordt == '') {
-      _record = List<ArticleInfo>();
-      await saveScrap();
-    }
-    if (recordt == '') {
-      _record = List<ArticleInfo>();
-      await saveScrap();
-    }
-    if (filtert == '') {
-      _filter = List<String>();
-      await saveScrap();
-    }
+    // if (scrapt == '') {
+    //   _scraps = List<ArticleInfo>();
+    //   await saveScrap();
+    // }
+    // if (recordt == '') {
+    //   _record = List<ArticleInfo>();
+    //   await saveRecord();
+    // }
+    // if (recordt == '') {
+    //   _record = List<ArticleInfo>();
+    //   await saveRecord();
+    // }
+    // if (filtert == '') {
+    //   _filter = List<String>();
+    //   await saveFilter();
+    // }
     if (groupt == '') return;
 
     _group = BoardGroup.fromMap(jsonDecode(groupt) as Map<String, dynamic>);
-    _scraps = (jsonDecode(scrapt) as List<dynamic>)
-        .map((e) => ArticleInfo.fromMap(e as Map<String, dynamic>))
-        .toList();
-    _record = (jsonDecode(recordt) as List<dynamic>)
-        .map((e) => ArticleInfo.fromMap(e as Map<String, dynamic>))
-        .toList();
-    _filter =
-        (jsonDecode(filtert) as List<dynamic>).map((e) => e as String).toList();
-    _scrapURLS.addAll(_scraps.map((e) => e.url));
+    // _scraps = (jsonDecode(scrapt) as List<dynamic>)
+    //     .map((e) => ArticleInfo.fromMap(e as Map<String, dynamic>))
+    //     .toList();
+    // _record = (jsonDecode(recordt) as List<dynamic>)
+    //     .map((e) => ArticleInfo.fromMap(e as Map<String, dynamic>))
+    //     .toList();
+    // _filter =
+    //     (jsonDecode(filtert) as List<dynamic>).map((e) => e as String).toList();
+    // _scrapURLS.addAll(_scraps.map((e) => e.url));
   }
 
   Future<void> saveGroup() async {
@@ -184,23 +292,23 @@ class BoardManager {
         .put(base64.encode(utf8.encode(_group.name)), groupt);
   }
 
-  Future<void> saveScrap() async {
-    var scrapt = jsonEncode(_scraps.map((e) => e.toMap()).toList());
-    await Hive.box("scraps").put(base64.encode(utf8.encode(_group.name)),
-        scrapt == null ? '[]' : scrapt);
-  }
+  // Future<void> saveScrap() async {
+  //   var scrapt = jsonEncode(_scraps.map((e) => e.toMap()).toList());
+  //   await Hive.box("scraps").put(base64.encode(utf8.encode(_group.name)),
+  //       scrapt == null ? '[]' : scrapt);
+  // }
 
-  Future<void> saveRecord() async {
-    var recordt = jsonEncode(_record.map((e) => e.toMap()).toList());
-    await Hive.box("record").put(base64.encode(utf8.encode(_group.name)),
-        recordt == null ? '[]' : recordt);
-  }
+  // Future<void> saveRecord() async {
+  //   var recordt = jsonEncode(_record.map((e) => e.toMap()).toList());
+  //   await Hive.box("record").put(base64.encode(utf8.encode(_group.name)),
+  //       recordt == null ? '[]' : recordt);
+  // }
 
-  Future<void> saveFilter() async {
-    var filtert = jsonEncode(_filter);
-    await Hive.box("filter").put(base64.encode(utf8.encode(_group.name)),
-        filtert == null ? '[]' : filtert);
-  }
+  // Future<void> saveFilter() async {
+  //   var filtert = jsonEncode(_filter);
+  //   await Hive.box("filter").put(base64.encode(utf8.encode(_group.name)),
+  //       filtert == null ? '[]' : filtert);
+  // }
 
   // void registerBoard(BoardInfo info) {
   //   _dl.add(info);
@@ -218,48 +326,48 @@ class BoardManager {
     return _group.subGroups;
   }
 
-  List<ArticleInfo> getScraps() {
-    return _scraps;
-  }
+  // List<ArticleInfo> getScraps() {
+  //   return _scraps;
+  // }
 
-  List<ArticleInfo> getRecord() {
-    return _record;
-  }
+  // List<ArticleInfo> getRecord() {
+  //   return _record;
+  // }
 
-  List<String> getFilter() {
-    return _filter;
-  }
+  // List<String> getFilter() {
+  //   return _filter;
+  // }
 
-  Future<void> addScrap(ArticleInfo articleInfo) async {
-    _scraps.add(articleInfo);
-    _scrapURLS.add(articleInfo.url);
-    await saveScrap();
-  }
+  // Future<void> addScrap(ArticleInfo articleInfo) async {
+  //   _scraps.add(articleInfo);
+  //   _scrapURLS.add(articleInfo.url);
+  //   await saveScrap();
+  // }
 
-  Future<void> removeScrap(ArticleInfo articleInfo) async {
-    _scraps.removeWhere((element) => element.url == articleInfo.url);
-    _scrapURLS.remove(articleInfo.url);
-    await saveScrap();
-  }
+  // Future<void> removeScrap(ArticleInfo articleInfo) async {
+  //   _scraps.removeWhere((element) => element.url == articleInfo.url);
+  //   _scrapURLS.remove(articleInfo.url);
+  //   await saveScrap();
+  // }
 
-  bool isScrapred(String url) {
-    return _scrapURLS.contains(url);
-  }
+  // bool isScrapred(String url) {
+  //   return _scrapURLS.contains(url);
+  // }
 
-  Future<void> addFilter(String filt) async {
-    _filter.add(filt);
-    await saveFilter();
-  }
+  // Future<void> addFilter(String filt) async {
+  //   _filter.add(filt);
+  //   await saveFilter();
+  // }
 
-  Future<void> removeFilter(String filt) async {
-    _filter.removeWhere((element) => element == filt);
-    await saveFilter();
-  }
+  // Future<void> removeFilter(String filt) async {
+  //   _filter.removeWhere((element) => element == filt);
+  //   await saveFilter();
+  // }
 
-  Future<void> addRecord(ArticleInfo articleInfo) async {
-    _record.add(articleInfo);
-    await saveRecord();
-  }
+  // Future<void> addRecord(ArticleInfo articleInfo) async {
+  //   _record.add(articleInfo);
+  //   await saveRecord();
+  // }
 
   Future<void> deleteBoard(BoardInfo board) async {
     _group.boards.remove(board);

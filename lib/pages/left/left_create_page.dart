@@ -12,6 +12,7 @@ import 'package:communityexplorer/settings/settings.dart';
 import 'package:flutter/material.dart';
 
 const _supportedCommunity = [
+  '개드립',
   '디시인사이드',
   '루리웹',
   '아카라이브',

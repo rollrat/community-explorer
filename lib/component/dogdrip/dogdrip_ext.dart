@@ -1,25 +1,24 @@
 // This source code is a part of Project Violet.
 // Copyright (C) 2020. rollrat. Licensed under the MIT License.
 
-import 'dart:convert';
 import 'dart:ui';
 
 import 'package:charset_converter/charset_converter.dart';
-import 'package:communityexplorer/component/arcalive/arcalive_parser.dart';
 import 'package:communityexplorer/component/dcinside/dcinside_parser.dart';
+import 'package:communityexplorer/component/dogdrip/dogdrip_parser.dart';
 import 'package:communityexplorer/component/huvkr/huvkr_parser.dart';
 import 'package:communityexplorer/component/interface.dart';
 import 'package:communityexplorer/download/download_task.dart';
 import 'package:communityexplorer/network/wrapper.dart';
-import 'package:communityexplorer/other/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class ArcaLiveExtractor extends BoardExtractor {
+class DogDripExtractor extends BoardExtractor {
   RegExp urlMatcher;
 
-  ArcaLiveExtractor() {
-    urlMatcher = RegExp(r'^https?://.*?arca.live/b/[^/]+$');
+  DogDripExtractor() {
+    urlMatcher =
+        RegExp(r'^https://www.dogdrip.net/((\w+)(/\w+(/\d+))?|index\.php.*?)$');
   }
 
   @override
@@ -29,37 +28,40 @@ class ArcaLiveExtractor extends BoardExtractor {
 
   @override
   Future<String> tidyURL(String url) async {
-    if (url.contains('?')) return url.split('?')[0];
     return url;
   }
 
   @override
   Color color() {
-    return Color(0xFF373a3c);
+    return Color(0xFF2e4361);
   }
 
   @override
   String fav() {
-    return 'https://arca.live/static/apple-icon.png';
+    return 'https://www.dogdrip.net/favicon.ico';
   }
 
   @override
   String extractor() {
-    return 'arcalive';
+    return 'dogdrip';
   }
 
   @override
   String name() {
-    return '아카라이브';
+    return '개드립';
   }
 
   @override
   Future<PageInfo> next(BoardInfo board, int offset) async {
     // URL
-    // 1. https://arca.live/b/tullius?mode=best&p=2
+    // 1. https://www.dogdrip.net/dogdrip
+    // 2. https://www.dogdrip.net/?mid=dogdrip&sort_index=popular
+    // 3. https://www.dogdrip.net/?mid=doc&category=18568364
+    // 4. https://www.dogdrip.net/index.php?mid=dogdrip&page=1
+    // 5. https://www.dogdrip.net/index.php?mid=dogdrip&sort_index=popular&page=2
 
     var qurey = Map<String, dynamic>.from(board.extrainfo);
-    qurey['p'] = offset + 1;
+    qurey['page'] = offset;
 
     var url = board.url +
         '?' +
@@ -67,8 +69,6 @@ class ArcaLiveExtractor extends BoardExtractor {
             .map((e) =>
                 '${e.key}=${Uri.encodeQueryComponent(e.value.toString())}')
             .join('&');
-
-    print(url);
 
     var html = (await HttpWrapper.getr(
       url,
@@ -81,7 +81,7 @@ class ArcaLiveExtractor extends BoardExtractor {
 
     List<ArticleInfo> articles;
 
-    articles = await ArcaLiveParser.parseBoard(html);
+    articles = await DogDripParser.parseBoard(html);
 
     return PageInfo(
       articles: articles,
@@ -94,10 +94,16 @@ class ArcaLiveExtractor extends BoardExtractor {
   List<BoardInfo> best() {
     return [
       BoardInfo(
-        url: 'https://arca.live/b/issue',
-        name: '유머/이슈 채널',
-        extrainfo: {},
-        extractor: 'arcalive',
+        url: 'https://www.dogdrip.net/index.php',
+        name: '개드립',
+        extrainfo: {'mid': 'dogdrip', 'sort_index': 'popular'},
+        extractor: 'dogdrip',
+      ),
+      BoardInfo(
+        url: 'https://www.dogdrip.net/index.php',
+        name: '유저 개드립',
+        extrainfo: {'mid': 'userdog', 'sort_index': 'popular'},
+        extractor: 'dogdrip',
       ),
     ];
   }
@@ -108,30 +114,5 @@ class ArcaLiveExtractor extends BoardExtractor {
   }
 
   @override
-  Future<List<DownloadTask>> extractMedia(String url) async {
-    var match = urlMatcher.allMatches(url);
-
-    var result = List<DownloadTask>();
-
-    var g = ArcaLiveParser.parseArticle((await HttpWrapper.getr(url)).body);
-
-    for (int i = 0; i < g['links'].length; i++) {
-      result.add(
-        DownloadTask(
-          url: g['links'][i],
-          // filename: fn,
-          referer: url,
-          format: FileNameFormat(
-            channel: g['channel'],
-            title: g['title'],
-            filenameWithoutExtension: Utils.intToString(i, pad: 3),
-            extension: g['links'][i].split('?')[0].split('.').last,
-            extractor: 'arcalive',
-          ),
-        ),
-      );
-    }
-
-    return result;
-  }
+  Future<List<DownloadTask>> extractMedia(String url) async {}
 }

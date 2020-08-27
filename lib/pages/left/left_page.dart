@@ -231,7 +231,8 @@ class __CheckState extends State<_Check> with TickerProviderStateMixin {
 
         if (v == 0) {
           // var gg = await BoardManager.get(widget.subgroup.name);
-          var gg = BoardManager.getByGroup(BoardGroup(boards: [widget.board]));
+          var gg = BoardManager.getByGroup(
+              BoardGroup(boards: [widget.board], name: widget.board.name));
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => MainPage(gg, true)),

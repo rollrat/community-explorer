@@ -8,8 +8,10 @@
 import 'dart:convert';
 
 import 'package:charset_converter/charset_converter.dart';
+import 'package:communityexplorer/component/dogdrip/dogdrip_parser.dart';
 import 'package:communityexplorer/component/huvkr/huvkr_parser.dart';
 import 'package:communityexplorer/network/wrapper.dart';
+import 'package:communityexplorer/other/html/parser.dart';
 import 'package:communityexplorer/other/xpath_to_selector.dart';
 import 'package:communityexplorer/server/violet.dart';
 import 'package:flutter/material.dart';
@@ -24,22 +26,43 @@ void main() {
     //     .toSelector(".//span[@class='reply_num']"));
 
     //print(DateTime.now().toUtc().millisecondsSinceEpoch);
-    print(await Violet.report("test.com", "1234", "test", "test"));
+    // print(await Violet.report("test.com", "1234", "test", "test"));
 
-    // var url = 'http://web.humoruniv.com/board/humor/list.html?table=pds';
-    // var html = (await HttpWrapper.getr(
-    //   url,
-    //   headers: {
-    //     'Accept': HttpWrapper.accept,
-    //     'UserAgent': HttpWrapper.userAgent,
-    //   },
-    // ))
-    //     .body;
+    // var url = 'https://www.dogdrip.net/doc';
+    var url =
+        'https://www.dogdrip.net/index.php?mid=gameserial&category=125480378&page=1';
+    var html = (await HttpWrapper.getr(
+      url,
+      headers: {
+        'Accept': HttpWrapper.accept,
+        'UserAgent': HttpWrapper.userAgent,
+      },
+    ))
+        .body;
 
     // print(html.length);
 
     // HuvkrParser.parseBoard(html).forEach((element) {
     //   print(element.title.trim());
     // });
+
+    // (await DogDripParser.parseBoard(html)).forEach((element) {
+    //   print(element.title);
+    // });
+
+    var doc = parse(html)
+        .querySelector('div.ed.category.category-pill')
+        .querySelectorAll('a');
+
+    doc
+        .map((e) {
+          if (!e.attributes['href'].contains('/category/'))
+            return '${e.text.trim()}|category|';
+          return '${e.text.trim()}|category|${e.attributes['href'].split('/').last}';
+        })
+        .toList()
+        .forEach((element) {
+          print(element);
+        });
   });
 }
