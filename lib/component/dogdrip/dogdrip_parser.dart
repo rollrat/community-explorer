@@ -19,46 +19,46 @@ class DogDripParser {
         continue;
       int base = 2;
 
-      var id = tr.querySelector('/td[1]'.toQureySelector()).text.trim();
+      var id = tr.querySelector('/td[1]'.toquerySelector()).text.trim();
 
-      if (int.tryParse(id) == null) {
+      if (int.tryParse(id) == null && id != '') {
         base = 1;
       }
 
       var classt =
-          tr.querySelector('/td[$base]/span/a/span'.toQureySelector()).text;
+          tr.querySelector('/td[$base]/span/a/span'.toquerySelector()).text;
 
       int sub = 1;
 
-      if (tr.querySelector('/td[$base]/span/a[2]'.toQureySelector()) != null)
+      if (tr.querySelector('/td[$base]/span/a[2]'.toquerySelector()) != null)
         sub = 2;
 
       var url = tr
-          .querySelector('/td[$base]/span/a[$sub]'.toQureySelector())
+          .querySelector('/td[$base]/span/a[$sub]'.toquerySelector())
           .attributes['href'];
       if (!url.startsWith('http')) url = 'https://www.dogdrip.net' + url;
-      id = url.split('/').last;
+      id = url.split(RegExp(r'/|\=|\&')).last;
       var title = tr
-          .querySelector('/td[$base]/span/a[$sub]/span'.toQureySelector())
+          .querySelector('/td[$base]/span/a[$sub]/span'.toquerySelector())
           .text
           .trim();
       String comment;
       if (tr.querySelector(
-              '/td[$base]/span/a[$sub]/span[2]'.toQureySelector()) !=
+              '/td[$base]/span/a[$sub]/span[2]'.toquerySelector()) !=
           null)
         comment = tr
-            .querySelector('/td[$base]/span/a[$sub]/span[2]'.toQureySelector())
+            .querySelector('/td[$base]/span/a[$sub]/span[2]'.toquerySelector())
             .text
             .trim();
 
       bool img = false;
       bool video = false;
       var icon = tr
-          .querySelector('/td[$base]/span/a[$sub]/span[2]/i'.toQureySelector());
+          .querySelector('/td[$base]/span/a[$sub]/span[2]/i'.toquerySelector());
 
       if (icon == null) {
         icon = tr.querySelector(
-            '/td[$base]/span/a[$sub]/span[3]/i'.toQureySelector());
+            '/td[$base]/span/a[$sub]/span[3]/i'.toquerySelector());
       }
 
       if (icon != null) {
@@ -68,11 +68,11 @@ class DogDripParser {
 
       // img
       var author =
-          tr.querySelector('/td[${base + 1}]/a'.toQureySelector()).text.trim();
+          tr.querySelector('/td[${base + 1}]/a'.toquerySelector()).text.trim();
       var upvote =
-          tr.querySelector('/td[${base + 2}]'.toQureySelector()).text.trim();
+          tr.querySelector('/td[${base + 2}]'.toquerySelector()).text.trim();
       var writetimet =
-          tr.querySelector('/td[${base + 3}]'.toQureySelector()).text.trim();
+          tr.querySelector('/td[${base + 3}]'.toquerySelector()).text.trim();
 
       DateTime writeTime;
       if (writetimet.contains('.'))
@@ -100,12 +100,12 @@ class DogDripParser {
       }
 
       // var views =
-      //     tr.querySelector('/td[${base + 4}]'.toQureySelector()).text.trim();
+      //     tr.querySelector('/td[${base + 4}]'.toquerySelector()).text.trim();
 
       int views = 0;
-      if (tr.querySelector('/td[${base + 4}]'.toQureySelector()) != null)
+      if (tr.querySelector('/td[${base + 4}]'.toquerySelector()) != null)
         views = int.parse(
-            tr.querySelector('/td[${base + 4}]'.toQureySelector()).text.trim());
+            tr.querySelector('/td[${base + 4}]'.toquerySelector()).text.trim());
 
       result.add(ArticleInfo(
         info: id,

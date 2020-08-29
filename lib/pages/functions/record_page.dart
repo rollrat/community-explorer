@@ -25,21 +25,22 @@ class RecordPage extends StatefulWidget {
 }
 
 class _RecordPageState extends State<RecordPage> {
-  // static MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
-  //   keywords: <String>['flutterio', 'beautiful apps'],
-  //   contentUrl: 'https://flutter.dev',
-  //   childDirected: false,
-  //   testDevices: <String>[],
-  // );
+  static MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+    keywords: <String>['flutterio', 'beautiful apps'],
+    contentUrl: 'https://flutter.dev',
+    childDirected: false,
+    testDevices: <String>[],
+  );
 
-  // BannerAd banner = BannerAd(
-  //   adUnitId: BannerAd.testAdUnitId,
-  //   size: AdSize.fullBanner,
-  //   targetingInfo: targetingInfo,
-  //   // listener: (MobileAdEvent event) {
-  //   //   print("$event");
-  //   // },
-  // );
+  BannerAd banner = BannerAd(
+    // adUnitId: BannerAd.testAdUnitId,
+    adUnitId: 'ca-app-pub-6003769087560175/8779826423',
+    size: AdSize.banner,
+    targetingInfo: targetingInfo,
+    // listener: (MobileAdEvent event) {
+    //   print("$event");
+    // },
+  );
 
   @override
   void initState() {

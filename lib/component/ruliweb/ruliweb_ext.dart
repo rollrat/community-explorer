@@ -62,18 +62,23 @@ class RuliwebExtractor extends BoardExtractor {
   }
 
   @override
+  String shortName() {
+    return '루리';
+  }
+
+  @override
   Future<PageInfo> next(BoardInfo board, int offset) async {
     // URL
     // 1. https://bbs.ruliweb.com/best/cartoon/now?page=1
     // 2. https://bbs.ruliweb.com/community/board/300143?view_best=1
     // 3. https://bbs.ruliweb.com/hobby/board/300064
 
-    var qurey = Map<String, dynamic>.from(board.extrainfo);
-    qurey['page'] = offset + 1;
+    var query = Map<String, dynamic>.from(board.extrainfo);
+    query['page'] = offset + 1;
 
     var url = board.url +
         '?' +
-        qurey.entries
+        query.entries
             .map((e) =>
                 '${e.key}=${Uri.encodeQueryComponent(e.value.toString())}')
             .join('&');
@@ -93,6 +98,13 @@ class RuliwebExtractor extends BoardExtractor {
       articles = await RuliwebParser.parseSpecific(html);
     else
       articles = await RuliwebParser.parseBoard(html);
+
+    articles.forEach((element) {
+      var uri = Uri.parse(element.url);
+      var query = Map<String, String>.from(uri.queryParameters);
+      query['page'] = '1';
+      element.url = uri.replace(queryParameters: query).toString();
+    });
 
     return PageInfo(
       articles: articles,

@@ -54,16 +54,21 @@ class ArcaLiveExtractor extends BoardExtractor {
   }
 
   @override
+  String shortName() {
+    return '아카';
+  }
+
+  @override
   Future<PageInfo> next(BoardInfo board, int offset) async {
     // URL
     // 1. https://arca.live/b/tullius?mode=best&p=2
 
-    var qurey = Map<String, dynamic>.from(board.extrainfo);
-    qurey['p'] = offset + 1;
+    var query = Map<String, dynamic>.from(board.extrainfo);
+    query['p'] = offset + 1;
 
     var url = board.url +
         '?' +
-        qurey.entries
+        query.entries
             .map((e) =>
                 '${e.key}=${Uri.encodeQueryComponent(e.value.toString())}')
             .join('&');
@@ -80,6 +85,13 @@ class ArcaLiveExtractor extends BoardExtractor {
     List<ArticleInfo> articles;
 
     articles = await ArcaLiveParser.parseBoard(html);
+
+    articles.forEach((element) {
+      var uri = Uri.parse(element.url);
+      var query = Map<String, String>.from(uri.queryParameters);
+      query['p'] = '1';
+      element.url = uri.replace(queryParameters: query).toString();
+    });
 
     return PageInfo(
       articles: articles,

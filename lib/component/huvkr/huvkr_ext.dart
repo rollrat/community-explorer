@@ -61,16 +61,21 @@ class HuvkrExtractor extends BoardExtractor {
   }
 
   @override
+  String shortName() {
+    return '웃대';
+  }
+
+  @override
   Future<PageInfo> next(BoardInfo board, int offset) async {
     // URL
     // 1. http://web.humoruniv.com/board/humor/list.html?table=pds
 
-    var qurey = Map<String, dynamic>.from(board.extrainfo);
-    qurey['pg'] = offset;
+    var query = Map<String, dynamic>.from(board.extrainfo);
+    query['pg'] = offset;
 
     var url = board.url +
         '?' +
-        qurey.entries
+        query.entries
             .map((e) =>
                 '${e.key}=${Uri.encodeQueryComponent(e.value.toString())}')
             .join('&');
@@ -89,6 +94,13 @@ class HuvkrExtractor extends BoardExtractor {
     List<ArticleInfo> articles;
 
     articles = await HuvkrParser.parseBoard(html);
+
+    articles.forEach((element) {
+      var uri = Uri.parse(element.url);
+      var query = Map<String, String>.from(uri.queryParameters);
+      query['pg'] = '0';
+      element.url = uri.replace(queryParameters: query).toString();
+    });
 
     return PageInfo(
       articles: articles,

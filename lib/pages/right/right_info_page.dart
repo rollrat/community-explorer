@@ -32,7 +32,7 @@ class InfoPage extends StatelessWidget {
                       Text(''),
                       Text('Violet Community Explorer',
                           style: TextStyle(fontSize: 30)),
-                      Text('0.11.4', style: TextStyle(fontSize: 30)),
+                      Text('1.0.0', style: TextStyle(fontSize: 30)),
                       Text(''),
                       // Text('Project-Violet Android App'),
                       // Text(

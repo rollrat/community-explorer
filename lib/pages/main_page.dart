@@ -3,6 +3,7 @@
 
 import 'package:communityexplorer/component/board_manager.dart';
 import 'package:communityexplorer/component/interface.dart';
+import 'package:communityexplorer/network/wrapper.dart';
 import 'package:communityexplorer/pages/article/article_widget.dart';
 import 'package:communityexplorer/pages/left/left_page.dart';
 import 'package:communityexplorer/pages/right/right_page.dart';
@@ -12,6 +13,7 @@ import 'package:communityexplorer/widget/toast.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -35,21 +37,22 @@ class _MainPageState extends State<MainPage> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
-  // static MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
-  //   keywords: <String>['flutterio', 'beautiful apps'],
-  //   contentUrl: 'https://flutter.dev',
-  //   childDirected: false,
-  //   testDevices: <String>[],
-  // );
+  static MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+    keywords: <String>['flutterio', 'beautiful apps'],
+    contentUrl: 'https://flutter.dev',
+    childDirected: false,
+    testDevices: <String>[],
+  );
 
-  // BannerAd banner = BannerAd(
-  //   adUnitId: BannerAd.testAdUnitId,
-  //   size: AdSize.fullBanner,
-  //   targetingInfo: targetingInfo,
-  //   // listener: (MobileAdEvent event) {
-  //   //   print("$event");
-  //   // },
-  // );
+  BannerAd banner = BannerAd(
+    // adUnitId: BannerAd.testAdUnitId,
+    adUnitId: 'ca-app-pub-6003769087560175/8779826423',
+    size: AdSize.banner,
+    targetingInfo: targetingInfo,
+    // listener: (MobileAdEvent event) {
+    //   print("$event");
+    // },
+  );
 
   @override
   void initState() {
@@ -105,10 +108,15 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    final statusBarHeight = MediaQuery.of(context).padding.top;
+    // final statusBarHeight = MediaQuery.of(context).padding.top;
     final width = MediaQuery.of(context).size.width;
     final height =
         MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
+
+    // return InAppWebView(
+    //     initialUrl:
+    //         'http://web.humoruniv.com/board/humor/read.html?table=pds&pg=0&number=991460',
+    //     initialHeaders: {'User-Agent': HttpWrapper.mobileUserAgent});
 
     return InnerDrawer(
       key: _innerDrawerKey,
@@ -146,8 +154,9 @@ class _MainPageState extends State<MainPage> {
       scaffold: Scaffold(
         body: articles == null
             ? Container()
-            : Padding(
-                padding: EdgeInsets.only(top: statusBarHeight),
+            // : Padding(
+            //     padding: EdgeInsets.only(top: statusBarHeight),
+            : SafeArea(
                 child: SmartRefresher(
                   enablePullDown: true,
                   enablePullUp: true,

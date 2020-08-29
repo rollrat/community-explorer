@@ -61,17 +61,22 @@ class DCInsideExtractor extends BoardExtractor {
   }
 
   @override
+  String shortName() {
+    return '디시';
+  }
+
+  @override
   Future<PageInfo> next(BoardInfo board, int offset) async {
     // URL
     // 1. https://gall.dcinside.com/board/lists
     // 2. https://gall.dcinside.com/mgallery/board/lists
 
-    var qurey = Map<String, dynamic>.from(board.extrainfo);
-    qurey['page'] = offset + 1;
+    var query = Map<String, dynamic>.from(board.extrainfo);
+    query['page'] = offset + 1;
 
     var url = board.url +
         '?' +
-        qurey.entries
+        query.entries
             .map((e) =>
                 '${e.key}=${Uri.encodeQueryComponent(e.value.toString())}')
             .join('&');
@@ -89,8 +94,21 @@ class DCInsideExtractor extends BoardExtractor {
 
     if (!board.url.contains('/mgallery/'))
       articles = await DCInsideParser.parseGalleryBoard(html);
-    else
-      articles = await DCInsideParser.parseMinorGalleryBoard(html);
+    else {
+      try {
+        articles = await DCInsideParser.parseMinorGalleryBoard(html);
+      } catch (e) {
+        // 클래스/말머리가 없는 게시판
+        articles = await DCInsideParser.parseGalleryBoard(html);
+      }
+    }
+
+    articles.forEach((element) {
+      var uri = Uri.parse(element.url);
+      var query = Map<String, String>.from(uri.queryParameters);
+      query['page'] = '1';
+      element.url = uri.replace(queryParameters: query).toString();
+    });
 
     return PageInfo(
       articles: articles,

@@ -312,11 +312,11 @@ class _CreateSubscribePageState extends State<CreateSubscribePage> {
   }
 
   Future<void> _classCal(BoardInfo board) async {
-    var qurey = Map<String, dynamic>.from(board.extrainfo);
+    var query = Map<String, dynamic>.from(board.extrainfo);
 
     var url = board.url +
         '?' +
-        qurey.entries
+        query.entries
             .map((e) =>
                 '${e.key}=${Uri.encodeQueryComponent(e.value.toString())}')
             .join('&');

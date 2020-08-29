@@ -16,20 +16,20 @@ class ClienParser {
       var sym = int.parse(item.querySelector('div.view_symph').text.trim());
 
       var board =
-          item.querySelector('/div[2]/a[1]/span[2]'.toQureySelector()) != null
+          item.querySelector('/div[2]/a[1]/span[2]'.toquerySelector()) != null
               ? item
-                  .querySelector('/div[2]/a[1]/span[1]'.toQureySelector())
+                  .querySelector('/div[2]/a[1]/span[1]'.toquerySelector())
                   .text
               : null;
 
       var title =
-          item.querySelector('/div[2]/a[1]/span[2]'.toQureySelector()) != null
+          item.querySelector('/div[2]/a[1]/span[2]'.toquerySelector()) != null
               ? item
-                  .querySelector('/div[2]/a[1]/span[2]'.toQureySelector())
+                  .querySelector('/div[2]/a[1]/span[2]'.toquerySelector())
                   .text
                   .trim()
               : item
-                  .querySelector('/div[2]/a[1]'.toQureySelector())
+                  .querySelector('/div[2]/a[1]'.toquerySelector())
                   .text
                   .trim();
 
@@ -39,20 +39,20 @@ class ClienParser {
 
       try {
         comment = int.parse(item
-            .querySelector('/div[2]/a[2]/span[1]'.toQureySelector())
+            .querySelector('/div[2]/a[2]/span[1]'.toquerySelector())
             .text
             .trim());
       } catch (e) {}
 
-      var nick = item.querySelector('/div[3]/span[2]'.toQureySelector()).text;
+      var nick = item.querySelector('/div[3]/span[2]'.toquerySelector()).text;
 
       if (nick == '') {
         nick = item
-            .querySelector('/div[3]/span[2]/img[1]'.toQureySelector())
+            .querySelector('/div[3]/span[2]/img[1]'.toquerySelector())
             .attributes['alt'];
       }
 
-      var viewt = item.querySelector('/div[4]'.toQureySelector()).text.trim();
+      var viewt = item.querySelector('/div[4]'.toquerySelector()).text.trim();
       var view = 0;
 
       if (viewt.contains('k'))
@@ -61,11 +61,11 @@ class ClienParser {
         view = int.parse(viewt);
 
       var dt = DateTime.parse(
-          item.querySelector('/div[5]/span[1]/span[1]'.toQureySelector()).text);
+          item.querySelector('/div[5]/span[1]/span[1]'.toquerySelector()).text);
 
       var url = 'https://www.clien.net' +
           item
-              .querySelector('/div[2]/a[1]'.toQureySelector())
+              .querySelector('/div[2]/a[1]'.toquerySelector())
               .attributes['href'];
 
       result.add(ArticleInfo(

@@ -40,21 +40,21 @@ class HuvkrParser {
     for (int i = 1;; i++) {
       var node = doc.querySelector(
           '/html/body/div[2]/div[1]/div[2]/div[2]/div[2]/div[1]/table[2]/tbody/tr[$i]'
-              .toQureySelector());
+              .toquerySelector());
 
       if (node.attributes['id'] == null) break;
 
       var thumbnail = node
-          .querySelector("./td[1]/div[1]/a[1]/img[1]".toQureySelector())
+          .querySelector("./td[1]/div[1]/a[1]/img[1]".toquerySelector())
           .attributes['src'];
       var title = node
-          .querySelector('./td[2]/a[1]'.toQureySelector())
+          .querySelector('./td[2]/a[1]'.toquerySelector())
           .text
           .trim()
           .replaceAll(new RegExp(r"\s+"), " ")
           .replaceAll(new RegExp(r"\[\d+\]"), "");
       var comment = int.parse(node
-          .querySelector('./td[2]/a[1]/span[1]'.toQureySelector())
+          .querySelector('./td[2]/a[1]/span[1]'.toquerySelector())
           .text
           .split('[')
           .last
@@ -64,27 +64,27 @@ class HuvkrParser {
 
       var author = node
           .querySelector('./td[3]/table[1]/tbody/tr[1]/td[2]/span[1]/span[1]'
-              .toQureySelector())
+              .toquerySelector())
           .text
           .trim();
 
       var writetime = DateTime.parse(node
-          .querySelector('./td[4]'.toQureySelector())
+          .querySelector('./td[4]'.toquerySelector())
           .text
           .replaceAll(new RegExp(r"\s+"), " ")
           .trim());
       var view = int.parse(node
-          .querySelector('./td[5]'.toQureySelector())
+          .querySelector('./td[5]'.toquerySelector())
           .text
           .replaceAll(',', '')
           .trim());
       var up = int.parse(node
-          .querySelector('./td[6]'.toQureySelector())
+          .querySelector('./td[6]'.toquerySelector())
           .text
           .replaceAll(',', '')
           .trim());
       var down = int.parse(node
-          .querySelector('./td[7]'.toQureySelector())
+          .querySelector('./td[7]'.toquerySelector())
           .text
           .replaceAll(',', '')
           .trim());

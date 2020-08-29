@@ -2,6 +2,7 @@
 // Copyright (C) 2020. rollrat. Licensed under the MIT License.
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:communityexplorer/component/board_manager.dart';
 import 'package:communityexplorer/component/interface.dart';
@@ -16,6 +17,8 @@ import 'package:ext_storage/ext_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+// import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 // import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 // import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -24,7 +27,8 @@ import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+// import 'package:webview_flutter/webview_flutter.dart';
+// import 'package:webview_flutter/webview_flutter.dart';
 // import 'package:webview_flutter/webview_flutter.dart';
 
 class ViewPage extends StatefulWidget {
@@ -49,6 +53,43 @@ class ViewPage extends StatefulWidget {
 class _ViewPageState extends State<ViewPage> {
   bool _downloadStart = false;
   double _downloadState = 0.0;
+  ContextMenu contextMenu;
+  InAppWebViewController webView;
+  double progress = 0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    contextMenu = ContextMenu(
+        menuItems: [
+          ContextMenuItem(
+              androidId: 1,
+              iosId: "1",
+              title: "Special",
+              action: () async {
+                print("Menu item Special clicked!");
+              })
+        ],
+        onCreateContextMenu: (hitTestResult) async {
+          print("onCreateContextMenu");
+          print(hitTestResult.extra);
+          print(await webView.getSelectedText());
+        },
+        onHideContextMenu: () {
+          print("onHideContextMenu");
+        },
+        onContextMenuActionItemClicked: (contextMenuItemClicked) {
+          var id = (Platform.isAndroid)
+              ? contextMenuItemClicked.androidId
+              : contextMenuItemClicked.iosId;
+          print("onContextMenuActionItemClicked: " +
+              id.toString() +
+              " " +
+              contextMenuItemClicked.title);
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -210,16 +251,16 @@ class _ViewPageState extends State<ViewPage> {
                 ),
               ],
             ),
-            new IconButton(
-              icon: new Icon(MdiIcons.alert),
-              tooltip: '신고',
-              onPressed: () async {
-                await showDialog(
-                  context: context,
-                  child: ReportPage(articleInfo: widget.articleInfo),
-                );
-              },
-            ),
+            // new IconButton(
+            //   icon: new Icon(MdiIcons.alert),
+            //   tooltip: '신고',
+            //   onPressed: () async {
+            //     await showDialog(
+            //       context: context,
+            //       child: ReportPage(articleInfo: widget.articleInfo),
+            //     );
+            //   },
+            // ),
             new IconButton(
               icon: new Icon(Icons.share),
               tooltip: '공유',
@@ -271,31 +312,64 @@ class _ViewPageState extends State<ViewPage> {
           ],
         ),
       ),
-      body: WebView(
-        initialUrl: widget.url,
-        // url: widget.url,
-        // appCacheEnabled: true,
+      // url: widget.url,
+      // body: WebView(
+      body: Container(
+        child: Column(
+          children: <Widget>[
+            Container(
+                child: progress < 1.0
+                    ? LinearProgressIndicator(
+                        value: progress,
+                        valueColor:
+                            new AlwaysStoppedAnimation<Color>(widget.color),
+                      )
+                    : Container()),
+            Expanded(
+              child: InAppWebView(
+                initialUrl: widget.url,
+                initialHeaders: {'User-Agent': HttpWrapper.mobileUserAgent},
+                initialOptions: InAppWebViewGroupOptions(
+                    android: AndroidInAppWebViewOptions(
+                  useHybridComposition: true,
+                )),
+                contextMenu: contextMenu,
+                onWebViewCreated: (InAppWebViewController controller) {
+                  webView = controller;
+                },
+                onProgressChanged:
+                    (InAppWebViewController controller, int progress) {
+                  setState(() {
+                    this.progress = progress / 100;
+                  });
+                },
+                // url: widget.url,
+                // appCacheEnabled: true,
 
-        userAgent: HttpWrapper.mobileUserAgent,
-        javascriptMode: JavascriptMode.unrestricted,
-        gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
-          Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer()),
-        ].toSet(),
-        // withOverviewMode: true,
-        // useWideViewPort: true,
-        // hidden: hidden,
+                // userAgent: HttpWrapper.mobileUserAgent,
+                // javascriptMode: JavascriptMode.unrestricted,
+                // gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
+                //   Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer()),
+                // ].toSet(),
+                // withOverviewMode: true,
+                // useWideViewPort: true,
+                // hidden: hidden,
 
-        // body: SafeArea(
-        //   // child: InAppWebView(
-        //   //   initialUrl: widget.url,
-        //   //   // clearCache: false,
-        //   //   // javascriptMode: JavascriptMode.unrestricted,
-        //   // ),
-        //   child: WebviewScaffold(
-        //     url: widget.url,
-        //     withZoom: true,
-        //   ),
-        // ),
+                // body: SafeArea(
+                //   // child: InAppWebView(
+                //   //   initialUrl: widget.url,
+                //   //   // clearCache: false,
+                //   //   // javascriptMode: JavascriptMode.unrestricted,
+                //   // ),
+                //   child: WebviewScaffold(
+                //     url: widget.url,
+                //     withZoom: true,
+                //   ),
+                // ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

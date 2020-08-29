@@ -16,32 +16,32 @@ class FMKoreaParser {
 
     for (var ll in ww.querySelectorAll('li')) {
       var recom = int.parse(
-          ll.querySelector('/div/a/span[2]'.toQureySelector()).text.trim());
+          ll.querySelector('/div/a/span[2]'.toquerySelector()).text.trim());
 
       var url =
-          ll.querySelector('/div/a[2]'.toQureySelector()).attributes['href'];
+          ll.querySelector('/div/a[2]'.toquerySelector()).attributes['href'];
       // var thumbnail = ll
-      //     .querySelector('/div/a[2]/img'.toQureySelector())
+      //     .querySelector('/div/a[2]/img'.toquerySelector())
       //     .attributes['data-original'];
       var thumbnail = '';
-      if (ll.querySelector('/div/a[2]/img'.toQureySelector()) != null)
+      if (ll.querySelector('/div/a[2]/img'.toquerySelector()) != null)
         thumbnail = ll
-            .querySelector('/div/a[2]/img'.toQureySelector())
+            .querySelector('/div/a[2]/img'.toquerySelector())
             .attributes['data-original'];
       var title = HtmlUnescape()
-          .convert(ll.querySelector('/div/h3/a'.toQureySelector()).text.trim());
+          .convert(ll.querySelector('/div/h3/a'.toquerySelector()).text.trim());
 
       var board =
-          ll.querySelector('/div/div/span/a'.toQureySelector()).text.trim();
+          ll.querySelector('/div/div/span/a'.toquerySelector()).text.trim();
       var prefix = '';
-      if (ll.querySelector('/div/div/span/a[2]'.toQureySelector()) != null)
+      if (ll.querySelector('/div/div/span/a[2]'.toquerySelector()) != null)
         prefix = ll
-            .querySelector('/div/div/span/a[2]'.toQureySelector())
+            .querySelector('/div/div/span/a[2]'.toquerySelector())
             .text
             .trim();
 
       var datet =
-          ll.querySelector('/div/div[2]/span'.toQureySelector()).text.trim();
+          ll.querySelector('/div/div[2]/span'.toquerySelector()).text.trim();
       DateTime dt;
       if (datet.contains('분 전')) {
         datet = datet.replaceAll('분 전', '').trim();
@@ -54,7 +54,7 @@ class FMKoreaParser {
       }
 
       var nick =
-          ll.querySelector('/div/div[2]/span[2]'.toQureySelector()).text.trim();
+          ll.querySelector('/div/div[2]/span[2]'.toquerySelector()).text.trim();
 
       var id = url.split('/').last;
 

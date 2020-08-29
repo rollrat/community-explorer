@@ -10,6 +10,7 @@ import 'package:communityexplorer/component/fmkorea/fmkorea_parser.dart';
 import 'package:communityexplorer/component/instiz/instiz_parser.dart';
 import 'package:communityexplorer/component/interface.dart';
 import 'package:communityexplorer/log/log.dart';
+import 'package:communityexplorer/pages/fcm_test.dart';
 import 'package:communityexplorer/pages/main_page.dart';
 import 'package:communityexplorer/settings/settings.dart';
 import 'package:crypto/crypto.dart';
@@ -35,13 +36,25 @@ void err(FlutterErrorDetails details) {
   print(details.stack.toString());
 }
 
+void test_main() {
+  runApp(
+    MaterialApp(
+      home: PushMessagingExample(),
+    ),
+  );
+}
+
 void main() async {
+  // test_main();
+  // return;
   WidgetsFlutterBinding.ensureInitialized();
 
   FlutterError.onError = err;
 
   // ca-app-pub-6003769087560175/8779826423
   // FirebaseAdMob.instance.initialize(appId: FirebaseAdMob.testAppId);
+  FirebaseAdMob.instance
+      .initialize(appId: 'ca-app-pub-6003769087560175~3910643124');
 
   var analytics = FirebaseAnalytics();
   var observer = FirebaseAnalyticsObserver(analytics: analytics);
@@ -76,17 +89,17 @@ void main() async {
 
   var gg = await BoardManager.get('구독');
 
-  if (DateTime.now().isAfter(DateTime(2020, 8, 31))) {
-    return;
-  }
+  // if (DateTime.now().isAfter(DateTime(2020, 8, 31))) {
+  //   return;
+  // }
 
-  if ((await http.get(
-              'https://raw.githubusercontent.com/rollrat/vce-limit/master/set'))
-          .body
-          .trim() !=
-      '0') {
-    return;
-  }
+  // if ((await http.get(
+  //             'https://raw.githubusercontent.com/rollrat/vce-limit/master/set'))
+  //         .body
+  //         .trim() !=
+  //     '0') {
+  //   return;
+  // }
 
   runApp(
     DynamicTheme(
@@ -99,6 +112,7 @@ void main() async {
       ),
       themedWidgetBuilder: (context, theme) {
         return MaterialApp(
+          debugShowCheckedModeBanner: false,
           theme: theme,
           home: MainPage(gg),
         );

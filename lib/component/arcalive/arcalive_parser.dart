@@ -52,14 +52,14 @@ class ArcaLiveParser {
     for (int i = 1;; i++) {
       var node = doc.querySelector(
           '/html[1]/body[1]/div[1]/div[3]/article[1]/div[1]/div[4]/div[1]/a[$i]'
-              .toQureySelector());
+              .toquerySelector());
 
       bool f = false;
 
       if (node == null) {
         node = doc.querySelector(
             '/html[1]/body[1]/div[1]/div[3]/article[1]/div[1]/div[4]/div[2]/a[$i]'
-                .toQureySelector());
+                .toquerySelector());
         f = true;
 
         if (node == null) break;

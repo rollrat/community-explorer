@@ -1,12 +1,12 @@
 // This source code is a part of Project Violet.
 // Copyright (C) 2020. rollrat. Licensed under the MIT License.
 
-class XPathToQureySelector {
-  static XPathToQureySelector instance;
+class XPathToquerySelector {
+  static XPathToquerySelector instance;
 
-  static XPathToQureySelector getInstance() {
+  static XPathToquerySelector getInstance() {
     if (instance == null) {
-      instance = XPathToQureySelector();
+      instance = XPathToquerySelector();
     }
 
     return instance;
@@ -16,7 +16,7 @@ class XPathToQureySelector {
 
   Map<String, String> _cache = Map<String, String>();
 
-  XPathToQureySelector() {
+  XPathToquerySelector() {
     var tag = r"([a-zA-Z][a-zA-Z0-9]{0,10}|\*)";
     var attribute = r"[.a-zA-Z_:][-\w:.]*(\(\))?)";
     var value = r"\s*[\w/:][-/\w\s,:;.]*";
@@ -111,7 +111,7 @@ class XPathToQureySelector {
 }
 
 extension XPathParsing on String {
-  String toQureySelector() {
-    return XPathToQureySelector.getInstance().toSelector(this);
+  String toquerySelector() {
+    return XPathToquerySelector.getInstance().toSelector(this);
   }
 }

@@ -16,30 +16,30 @@ class RuliwebParser {
     for (var item in items.querySelectorAll('tr')) {
       if (item.attributes['class'] != 'table_body') continue;
 
-      var id = item.querySelector('/td[1]'.toQureySelector()).text.trim();
-      var div = item.querySelector('/td[2]'.toQureySelector()).text.trim();
+      var id = item.querySelector('/td[1]'.toquerySelector()).text.trim();
+      var div = item.querySelector('/td[2]'.toquerySelector()).text.trim();
       var title =
-          item.querySelector('/td[3]/div/a[1]'.toQureySelector()).text.trim();
+          item.querySelector('/td[3]/div/a[1]'.toquerySelector()).text.trim();
       var com = 0;
 
       try {
         com = int.parse(item
-            .querySelector('/td[3]/div/a[2]/span'.toQureySelector())
+            .querySelector('/td[3]/div/a[2]/span'.toquerySelector())
             .text
             .trim()
             .replaceAll('(', '')
             .replaceAll(')', ''));
       } catch (e) {}
 
-      var writer = item.querySelector('/td[4]'.toQureySelector()).text.trim();
-      var rt = item.querySelector('/td[5]'.toQureySelector()).text.trim();
+      var writer = item.querySelector('/td[4]'.toquerySelector()).text.trim();
+      var rt = item.querySelector('/td[5]'.toquerySelector()).text.trim();
       var recom = 0;
       if (rt != null && rt != '') recom = int.parse(rt);
 
       var hit =
-          int.parse(item.querySelector('/td[6]'.toQureySelector()).text.trim());
+          int.parse(item.querySelector('/td[6]'.toquerySelector()).text.trim());
 
-      var dtt = item.querySelector('/td[7]'.toQureySelector()).text.trim();
+      var dtt = item.querySelector('/td[7]'.toquerySelector()).text.trim();
       if (dtt.contains(':') && dtt.length <= 5)
         dtt = DateFormat('yyyy-MM-dd').format(DateTime.now()) + ' ' + dtt;
       else if (dtt.contains('.') && dtt.length <= 8)
@@ -47,7 +47,7 @@ class RuliwebParser {
       var dt = DateTime.parse(dtt);
 
       var url = item
-          .querySelector('/td[3]/div/a[1]'.toQureySelector())
+          .querySelector('/td[3]/div/a[1]'.toquerySelector())
           .attributes['href'];
 
       var hasImage = item.querySelector('i.icon-picture') != null;
@@ -77,32 +77,32 @@ class RuliwebParser {
     var result = List<ArticleInfo>();
 
     for (var item in items.querySelectorAll('tr')) {
-      var div = item.querySelector('/td[1]'.toQureySelector()).text.trim();
+      var div = item.querySelector('/td[1]'.toquerySelector()).text.trim();
       var title =
-          item.querySelector('/td[2]/a[1]'.toQureySelector()).text.trim();
+          item.querySelector('/td[2]/a[1]'.toquerySelector()).text.trim();
       var com = 0;
 
       try {
         com = int.parse(item
-            .querySelector('/td[2]/span'.toQureySelector())
+            .querySelector('/td[2]/span'.toquerySelector())
             .text
             .trim()
             .replaceAll('(', '')
             .replaceAll(')', ''));
       } catch (e) {}
 
-      var writer = item.querySelector('/td[3]'.toQureySelector()).text.trim();
-      var rt = item.querySelector('/td[4]'.toQureySelector()).text.trim();
+      var writer = item.querySelector('/td[3]'.toquerySelector()).text.trim();
+      var rt = item.querySelector('/td[4]'.toquerySelector()).text.trim();
       var recom = 0;
       if (rt != null && rt != '') recom = int.parse(rt);
 
       var hit =
-          int.parse(item.querySelector('/td[5]'.toQureySelector()).text.trim());
+          int.parse(item.querySelector('/td[5]'.toquerySelector()).text.trim());
       var url = item
-          .querySelector('/td[2]/a[1]'.toQureySelector())
+          .querySelector('/td[2]/a[1]'.toquerySelector())
           .attributes['href'];
 
-      var dtt = item.querySelector('/td[6]'.toQureySelector()).text.trim();
+      var dtt = item.querySelector('/td[6]'.toquerySelector()).text.trim();
       if (dtt.contains(':') && dtt.length <= 5)
         dtt = DateFormat('yyyy-MM-dd').format(DateTime.now()) + ' ' + dtt;
       else if (dtt.contains('.') && dtt.length <= 8)
@@ -139,9 +139,9 @@ class RuliwebParser {
     for (var item in items.querySelectorAll('tr')) {
       // if (item.attributes['class'] != 'table_body') continue;
 
-      // var div = item.querySelector('/td[1]'.toQureySelector()).text.trim();
+      // var div = item.querySelector('/td[1]'.toquerySelector()).text.trim();
       // var title =
-      //     item.querySelector('/td[2]/div/a[1]'.toQureySelector()).text.trim();
+      //     item.querySelector('/td[2]/div/a[1]'.toquerySelector()).text.trim();
       // var com = 0;
 
       // try {
@@ -157,7 +157,7 @@ class RuliwebParser {
       // var dt = DateTime.parse(item.querySelector('/td[6]').text.trim());
 
       // var url = item
-      //     .querySelector('/td[2]/div/a[1]'.toQureySelector())
+      //     .querySelector('/td[2]/div/a[1]'.toquerySelector())
       //     .attributes['href'];
 
       // result.add(ArticleInfo(
@@ -182,18 +182,18 @@ class RuliwebParser {
     var title = doc
         .querySelector(
             '/html[1]/body[1]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/h4[1]/span[1]'
-                .toQureySelector())
+                .toquerySelector())
         .text
         .trim();
     var board = doc
         .querySelector(
             '/html[1]/body[1]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/h3[1]/a[1]'
-                .toQureySelector())
+                .toquerySelector())
         .text
         .trim();
     var body = doc.querySelector(
         '/html[1]/body[1]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[2]/div[1]/div[2]/div[2]'
-            .toQureySelector());
+            .toquerySelector());
 
     var links = List<String>();
 

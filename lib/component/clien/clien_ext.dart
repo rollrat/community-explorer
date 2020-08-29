@@ -53,6 +53,11 @@ class ClienExtractor extends BoardExtractor {
   }
 
   @override
+  String shortName() {
+    return '클량';
+  }
+
+  @override
   Future<PageInfo> next(BoardInfo board, int offset) async {
     // URL
     // 1. https://www.clien.net/service/group/clien_all?&od=T33
@@ -60,12 +65,12 @@ class ClienExtractor extends BoardExtractor {
     // 3. https://www.clien.net/service/board/image
     // 4. https://www.clien.net/service/board/kin
 
-    var qurey = Map<String, dynamic>.from(board.extrainfo);
-    qurey['p'] = offset + 1;
+    var query = Map<String, dynamic>.from(board.extrainfo);
+    query['p'] = offset + 1;
 
     var url = board.url +
         '?' +
-        qurey.entries
+        query.entries
             .map((e) =>
                 '${e.key}=${Uri.encodeQueryComponent(e.value.toString())}')
             .join('&');
@@ -82,6 +87,13 @@ class ClienExtractor extends BoardExtractor {
     List<ArticleInfo> articles;
 
     articles = await ClienParser.parseBoard(html);
+
+    articles.forEach((element) {
+      var uri = Uri.parse(element.url);
+      var query = Map<String, String>.from(uri.queryParameters);
+      query['po'] = '0';
+      element.url = uri.replace(queryParameters: query).toString();
+    });
 
     return PageInfo(
       articles: articles,

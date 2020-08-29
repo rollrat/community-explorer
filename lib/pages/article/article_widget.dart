@@ -11,13 +11,45 @@ import 'package:communityexplorer/pages/functions/report_page.dart';
 import 'package:communityexplorer/pages/functions/view_page.dart';
 import 'package:communityexplorer/settings/settings.dart';
 import 'package:communityexplorer/widget/toast.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 // import 'package:intl/intl.Dart';
+// const double _kRadius = 4;
+// const double _kBorderWidth = 1;
+
+// class MyPainter extends CustomPainter {
+//   MyPainter();
+
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     final rrectBorder =
+//         RRect.fromRectAndRadius(Offset.zero & size, Radius.circular(_kRadius));
+//     final rrectShadow =
+//         RRect.fromRectAndRadius(Offset(0, 3) & size, Radius.circular(_kRadius));
+
+//     final shadowPaint = Paint()
+//       ..strokeWidth = _kBorderWidth
+//       ..color = Colors.black
+//       ..style = PaintingStyle.stroke
+//       ..maskFilter = MaskFilter.blur(BlurStyle.normal, 2);
+//     final borderPaint = Paint()
+//       ..strokeWidth = _kBorderWidth
+//       ..color = Colors.white
+//       ..style = PaintingStyle.stroke;
+
+//     canvas.drawRRect(rrectShadow, shadowPaint);
+//     canvas.drawRRect(rrectBorder, borderPaint);
+//   }
+
+//   @override
+//   bool shouldRepaint(CustomPainter oldDelegate) => true;
+// }
 
 class ArticleWidget extends StatefulWidget {
   final ArticleInfo articleInfo;
@@ -48,6 +80,14 @@ class _ArticleWidgetState extends State<ArticleWidget> {
     // var windowWidth = MediaQuery.of(context).size.width;
 
     var display = AnimatedContainer(
+      foregroundDecoration: viewed
+          ? BoxDecoration(
+              color: Settings.themeWhat
+                  ? Colors.grey.shade800
+                  : Colors.grey.shade300,
+              backgroundBlendMode: BlendMode.saturation,
+            )
+          : null,
       duration: Duration(milliseconds: 300),
       height: widget.viewType == 0 ? 80 : 50,
       child: Stack(
@@ -58,15 +98,15 @@ class _ArticleWidgetState extends State<ArticleWidget> {
       ),
     );
 
-    if (viewed) {
-      return ColorFiltered(
-        colorFilter: ColorFilter.mode(
-          Settings.themeWhat ? Colors.grey.shade800 : Colors.grey.shade300,
-          BlendMode.saturation,
-        ),
-        child: display,
-      );
-    }
+    // if (viewed) {
+    //   return ColorFiltered(
+    //     colorFilter: ColorFilter.mode(
+    //       Settings.themeWhat ? Colors.grey.shade800 : Colors.grey.shade300,
+    //       BlendMode.saturation,
+    //     ),
+    //     child: display,
+    //   );
+    // }
 
     return display;
   }
@@ -97,6 +137,22 @@ class _ArticleWidgetState extends State<ArticleWidget> {
                   _state(),
                   widget.viewType == 0 ? _info() : Container(),
                 ],
+              ),
+            ),
+          ),
+          SizedBox(
+            width: widget.viewType == 0 ? 50 : 40,
+            height: widget.viewType == 0 ? 80 : 50,
+            child: Container(
+              color: Settings.themeWhat ? Colors.grey.shade600 : Colors.white,
+              child: Center(
+                child: Text(
+                  widget.articleInfo.comment.toString(),
+                  style: TextStyle(
+                      color: Settings.themeWhat
+                          ? Colors.grey.shade100
+                          : Color(0xFFd22227)),
+                ),
               ),
             ),
           ),
@@ -132,11 +188,11 @@ class _ArticleWidgetState extends State<ArticleWidget> {
               style: viewed
                   ? TextStyle(
                       fontSize: widget.viewType == 0 ? 15 : 14,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.normal,
                       color: Colors.grey)
                   : TextStyle(
                       fontSize: widget.viewType == 0 ? 15 : 14,
-                      fontWeight: FontWeight.bold),
+                      fontWeight: FontWeight.normal),
               // style: TextStyle(),
             ),
           ),
@@ -153,21 +209,80 @@ class _ArticleWidgetState extends State<ArticleWidget> {
     );
   }
 
+  _fav() {
+    var c = ComponentManager.instance.getExtractorByName(
+        (widget.articleInfo.page != null
+            ? widget.articleInfo.page.board.extractor
+            : widget.articleInfo.extractor));
+    // show favicon image
+    // return Image.network(
+    //   ComponentManager.instance
+    //       .getExtractorByName((widget.articleInfo.page != null
+    //           ? widget.articleInfo.page.board.extractor
+    //           : widget.articleInfo.extractor))
+    //       .fav(),
+    //   width: 16,
+    // );
+    // return Container(
+    //   child: CustomPaint(
+    //       painter: MyPainter(),
+    //       child: Container(
+    //         padding: EdgeInsets.all(0),
+    //         child: Text('text',
+    //             style: TextStyle(color: Colors.white, fontSize: 12)),
+    //       )),
+    // );
+    // return Text(
+    //   c.shortName(),
+    //   style: TextStyle(fontSize: 12),
+    // );
+
+    return Stack(
+      children: [
+        // Text(
+        //   '·',
+        //   style: TextStyle(fontSize: 12),
+        // ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(width: 1),
+            Text(
+              '· ' + c.shortName(),
+              style: TextStyle(fontSize: 12),
+            ),
+            Container(width: 1),
+          ],
+        ),
+        Container(
+          width: 6,
+          color: c.color(),
+          height: 21,
+        ),
+        Container(
+          height: 21,
+          width: (10 + 12 * c.shortName().length).toDouble(),
+          decoration: BoxDecoration(
+              border: Border.all(color: c.color()),
+              borderRadius: BorderRadius.circular(0)),
+        ),
+      ],
+    );
+  }
+
   _state() {
+    var c = ComponentManager.instance.getExtractorByName(
+        (widget.articleInfo.page != null
+            ? widget.articleInfo.page.board.extractor
+            : widget.articleInfo.extractor));
+    double fontSize = widget.viewType == 0 ? 15 : 12;
+    Color color = widget.viewType == 1 ? Colors.grey : null;
+
     return Expanded(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          widget.viewType == 1
-              ? Image.network(
-                  ComponentManager.instance
-                      .getExtractorByName((widget.articleInfo.page != null
-                          ? widget.articleInfo.page.board.extractor
-                          : widget.articleInfo.extractor))
-                      .fav(),
-                  width: 16,
-                )
-              : Container(),
+          widget.viewType == 1 ? _fav() : Container(),
           widget.viewType == 1
               ? Text(
                   '·' +
@@ -175,43 +290,43 @@ class _ArticleWidgetState extends State<ArticleWidget> {
                           ? widget.articleInfo.page.board.name
                           : widget.articleInfo.name) +
                       '·',
-                  style: TextStyle(fontSize: widget.viewType == 0 ? 15 : 12))
+                  style: TextStyle(fontSize: fontSize, color: color))
               : Container(),
 
           //
-          Container(width: widget.viewType == 1 ? 4 : 0),
-          Icon(MdiIcons.thumbUpOutline, size: widget.viewType == 0 ? 15 : 12),
+          // Container(width: widget.viewType == 1 ? 4 : 0),
+          Icon(/*MdiIcons.thumbUpOutline*/ MdiIcons.star,
+              size: fontSize, color: color),
           Container(width: 2),
           Text(numberWithComma(widget.articleInfo.upvote),
-              style: TextStyle(fontSize: widget.viewType == 0 ? 15 : 12)),
+              style: TextStyle(fontSize: fontSize, color: color)),
 
-          //
-          Text('·', style: TextStyle(fontSize: widget.viewType == 0 ? 15 : 12)),
-          Icon(MdiIcons.commentOutline, size: widget.viewType == 0 ? 15 : 12),
-          Container(width: 2),
-          Text(numberWithComma(widget.articleInfo.comment),
-              style: TextStyle(fontSize: widget.viewType == 0 ? 15 : 12)),
+          // //
+          // Text('·', style: TextStyle(fontSize: widget.viewType == 0 ? 15 : 12)),
+          // Icon(MdiIcons.commentOutline, size: widget.viewType == 0 ? 15 : 12),
+          // Container(width: 2),
+          // Text(numberWithComma(widget.articleInfo.comment),
+          //     style: TextStyle(fontSize: widget.viewType == 0 ? 15 : 12)),
 
           //
           widget.articleInfo.views != null
-              ? Text('·',
-                  style: TextStyle(fontSize: widget.viewType == 0 ? 15 : 12))
+              ? Text('·', style: TextStyle(fontSize: fontSize, color: color))
               : Container(),
           widget.articleInfo.views != null
-              ? Icon(MdiIcons.magnify, size: widget.viewType == 0 ? 15 : 12)
+              ? Icon(MdiIcons.magnify, size: fontSize, color: color)
               : Container(),
           widget.articleInfo.views != null ? Container(width: 1) : Container(),
           widget.articleInfo.views != null
               ? Text(numberWithComma(widget.articleInfo.views),
-                  style: TextStyle(fontSize: widget.viewType == 0 ? 15 : 12))
+                  style: TextStyle(fontSize: fontSize, color: color))
               : Container(),
 
           //
           widget.articleInfo.hasImage
-              ? Icon(MdiIcons.image, size: widget.viewType == 0 ? 15 : 12)
+              ? Icon(MdiIcons.image, size: fontSize, color: color)
               : Container(),
           widget.articleInfo.hasVideo
-              ? Icon(MdiIcons.video, size: widget.viewType == 0 ? 15 : 12)
+              ? Icon(MdiIcons.video, size: fontSize, color: color)
               : Container(),
           widget.viewType == 1
               ? Text(
@@ -222,7 +337,7 @@ class _ArticleWidgetState extends State<ArticleWidget> {
                               .format(widget.articleInfo.writeTime)
                           : DateFormat('yyyy-MM-dd kk:mm')
                               .format(widget.articleInfo.writeTime)),
-                  style: TextStyle(fontSize: 12))
+                  style: TextStyle(fontSize: 12, color: color))
               : Container(),
         ],
       ),
@@ -230,6 +345,7 @@ class _ArticleWidgetState extends State<ArticleWidget> {
   }
 
   _info() {
+    Color color = Colors.grey;
     return Expanded(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -246,13 +362,16 @@ class _ArticleWidgetState extends State<ArticleWidget> {
                 .fav(),
             width: 18,
           ),
-          Text('·' +
-              (widget.articleInfo.page != null
-                  ? widget.articleInfo.page.board.name
-                  : widget.articleInfo.name) +
-              '·' +
-              DateFormat('yyyy-MM-dd kk:mm')
-                  .format(widget.articleInfo.writeTime)),
+          Text(
+            '·' +
+                (widget.articleInfo.page != null
+                    ? widget.articleInfo.page.board.name
+                    : widget.articleInfo.name) +
+                '·' +
+                DateFormat('yyyy-MM-dd kk:mm')
+                    .format(widget.articleInfo.writeTime),
+            style: TextStyle(color: color),
+          ),
         ],
       ),
     );
@@ -275,7 +394,8 @@ class _ArticleWidgetState extends State<ArticleWidget> {
             await widget.boardManager.getFixed().addRecord(widget.articleInfo);
             await Navigator.push(
               context,
-              MaterialPageRoute(
+              // MaterialPageRoute(
+              CupertinoPageRoute(
                   builder: (context) => ViewPage(
                         url: url,
                         color: extractor.color(),

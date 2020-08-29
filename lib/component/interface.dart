@@ -12,6 +12,7 @@ abstract class BoardExtractor {
   String fav();
   String extractor();
   String name();
+  String shortName();
   Color color();
   Future<PageInfo> next(BoardInfo board, int offset);
   List<BoardInfo> best();
@@ -137,7 +138,7 @@ class PageInfo {
 }
 
 class ArticleInfo {
-  final String url;
+  String url;
   final String title;
   final int comment;
   final String thumbnail;

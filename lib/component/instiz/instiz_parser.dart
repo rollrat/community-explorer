@@ -18,32 +18,32 @@ class InstizParser {
 
     for (int i = 1;; i++) {
       var node = doc.querySelector(
-          "//table[@id='mainboard']/tbody/tr[$i]".toQureySelector());
+          "//table[@id='mainboard']/tbody/tr[$i]".toquerySelector());
 
       if (node == null) break;
 
       if (node.attributes['id'] == 'topboard') continue;
 
       var id =
-          int.parse(node.querySelector('/td[1]'.toQureySelector()).text.trim());
-      var category = node.querySelector('/td[2]'.toQureySelector()).text.trim();
+          int.parse(node.querySelector('/td[1]'.toquerySelector()).text.trim());
+      var category = node.querySelector('/td[2]'.toquerySelector()).text.trim();
 
-      var hasimg = node.querySelector('/td[3]/i'.toQureySelector()) != null;
+      var hasimg = node.querySelector('/td[3]/i'.toquerySelector()) != null;
       var title =
-          node.querySelector('/td[3]/span/a'.toQureySelector()).text.trim();
+          node.querySelector('/td[3]/span/a'.toquerySelector()).text.trim();
       var url = 'https://www.instiz.net/' +
           node
-              .querySelector('/td[3]/span/a'.toQureySelector())
+              .querySelector('/td[3]/span/a'.toquerySelector())
               .attributes['href']
               .trim();
       var comment = 0;
-      if (node.querySelector('/td[3]/a'.toQureySelector()) != null) {
+      if (node.querySelector('/td[3]/a'.toquerySelector()) != null) {
         comment =
-            int.parse(node.querySelector('/td[3]/a'.toQureySelector()).text);
+            int.parse(node.querySelector('/td[3]/a'.toquerySelector()).text);
       }
 
-      var nick = node.querySelector('/td[4]/a'.toQureySelector()).text.trim();
-      var datet = node.querySelector('/td[5]'.toQureySelector()).text.trim();
+      var nick = node.querySelector('/td[4]/a'.toquerySelector()).text.trim();
+      var datet = node.querySelector('/td[5]'.toquerySelector()).text.trim();
       DateTime date;
       if (datet.contains('.'))
         date = DateTime.parse(
@@ -57,9 +57,9 @@ class InstizParser {
       }
 
       var view =
-          int.parse(node.querySelector('/td[6]'.toQureySelector()).text.trim());
+          int.parse(node.querySelector('/td[6]'.toquerySelector()).text.trim());
       var upvote =
-          int.parse(node.querySelector('/td[7]'.toQureySelector()).text.trim());
+          int.parse(node.querySelector('/td[7]'.toquerySelector()).text.trim());
 
       result.add(ArticleInfo(
         info: id.toString(),

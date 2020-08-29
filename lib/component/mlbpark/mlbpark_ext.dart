@@ -55,18 +55,23 @@ class MLBParkExtractor extends BoardExtractor {
   }
 
   @override
+  String shortName() {
+    return '엠팍';
+  }
+
+  @override
   Future<PageInfo> next(BoardInfo board, int offset) async {
     // URL
     // 1. https://www.fmkorea.com/index.php?mid=afreecatv&listStyle=webzine&page=1n
     // 2. https://www.fmkorea.com/index.php?mid=afreecatv&listStyle=list&page=1
     // 3. https://www.fmkorea.com/afreecatv
 
-    var qurey = Map<String, dynamic>.from(board.extrainfo);
-    qurey['page'] = offset * 30 + 1;
+    var query = Map<String, dynamic>.from(board.extrainfo);
+    query['page'] = offset * 30 + 1;
 
     var url = board.url +
         '?' +
-        qurey.entries
+        query.entries
             .map((e) =>
                 '${e.key}=${Uri.encodeQueryComponent(e.value.toString())}')
             .join('&');
@@ -83,6 +88,13 @@ class MLBParkExtractor extends BoardExtractor {
     List<ArticleInfo> articles;
 
     articles = await MLBParkParser.parseBoard(html);
+
+    articles.forEach((element) {
+      var uri = Uri.parse(element.url);
+      var query = Map<String, String>.from(uri.queryParameters);
+      query['p'] = '1';
+      element.url = uri.replace(queryParameters: query).toString();
+    });
 
     return PageInfo(
       articles: articles,

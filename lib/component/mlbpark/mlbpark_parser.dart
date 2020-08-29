@@ -16,27 +16,27 @@ class MLBParkParser {
     for (int i = 1;; i++) {
       var node = doc.querySelector(
           '/html[1]/body[1]/div[1]/div[3]/div[2]/div[1]/div[1]/table[1]/tbody[1]/tr[$i]'
-              .toQureySelector());
+              .toquerySelector());
 
       if (node == null) break;
 
-      var not = node.querySelector('/td[1]'.toQureySelector()).text.trim();
+      var not = node.querySelector('/td[1]'.toquerySelector()).text.trim();
 
       if (not == '공지') continue;
 
       var no = int.parse(not);
 
       var url = node
-          .querySelector('/td[2]/a[1]'.toQureySelector())
+          .querySelector('/td[2]/a[1]'.toquerySelector())
           .attributes['href'];
       var title =
-          node.querySelector('/td[2]/a[1]'.toQureySelector()).text.trim();
+          node.querySelector('/td[2]/a[1]'.toquerySelector()).text.trim();
 
       String word;
       var comment = 0;
 
-      var ff = node.querySelector('/td[2]/a[1]/span[1]'.toQureySelector());
-      var bb = node.querySelector('/td[2]/a[1]/span[2]'.toQureySelector());
+      var ff = node.querySelector('/td[2]/a[1]/span[1]'.toquerySelector());
+      var bb = node.querySelector('/td[2]/a[1]/span[2]'.toquerySelector());
 
       if (ff != null) {
         if (ff.text.contains('[')) {
@@ -54,10 +54,10 @@ class MLBParkParser {
         }
       }
 
-      var author = node.querySelector('/td[3]/span[2]'.toQureySelector()).text;
+      var author = node.querySelector('/td[3]/span[2]'.toquerySelector()).text;
 
       var writeTimet =
-          node.querySelector('/td[4]/span[1]'.toQureySelector()).text.trim();
+          node.querySelector('/td[4]/span[1]'.toquerySelector()).text.trim();
 
       DateTime writeTime;
       if (writeTimet.contains(':')) {
@@ -66,7 +66,7 @@ class MLBParkParser {
         writeTime = DateTime.parse(writeTimet);
 
       var views = int.parse(node
-          .querySelector('/td[5]/span[1]'.toQureySelector())
+          .querySelector('/td[5]/span[1]'.toquerySelector())
           .text
           .trim()
           .replaceAll(',', ''));

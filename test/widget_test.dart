@@ -22,7 +22,7 @@ import 'package:communityexplorer/main.dart';
 
 void main() {
   test('Counter increments smoke test', () async {
-    // print(XPathToQureySelector.getInstance()
+    // print(XPathToquerySelector.getInstance()
     //     .toSelector(".//span[@class='reply_num']"));
 
     //print(DateTime.now().toUtc().millisecondsSinceEpoch);
