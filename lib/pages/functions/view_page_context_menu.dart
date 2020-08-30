@@ -2,12 +2,14 @@
 // Copyright (C) 2020. rollrat. Licensed under the MIT License.
 
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:communityexplorer/settings/settings.dart';
 
-class ArticleSelector extends StatelessWidget {
-  bool isScraped = false;
-  ArticleSelector([this.isScraped = false]);
+class ViewPageContextMenu extends StatelessWidget {
+  final String content;
+  final InAppWebViewHitTestResultType type;
+  ViewPageContextMenu(this.content, this.type);
 
   Color getColor(int i) {
     return Settings.themeWhat ? Colors.grey.shade400 : Colors.grey.shade900;
@@ -30,30 +32,39 @@ class ArticleSelector extends StatelessWidget {
               child: SizedBox(
                 child: SizedBox(
                   width: 280,
-                  height: (56 * 4 + 16).toDouble(),
+                  height: (56 * 3 + 16).toDouble(),
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        // _typeItem(context, Icons.grid_on, 'srt0', 0),
-                        _typeItem(
-                            context,
-                            isScraped ? MdiIcons.star : MdiIcons.starOutline,
-                            '스크랩' + (isScraped ? ' 취소' : ''),
-                            0),
-                        _typeItem(
-                            context, MdiIcons.contentCopy, '게시글 주소 복사', 3),
-                        _typeItem(
-                            context, MdiIcons.eyeOffOutline, '게시글 가리기', 1),
-                        _typeItem(
-                            context, MdiIcons.alertOutline, '게시글 신고하기', 2),
-                        // _typeItem(context, MdiIcons.trashCanOutline, '삭제', 2),
-                        // _typeItem(context, MdiIcons.viewAgendaOutline, 'srt2', 2),
-                        Expanded(
-                          child: Container(),
-                        )
-                      ],
+                      children: type == InAppWebViewHitTestResultType.IMAGE_TYPE
+                          ? <Widget>[
+                              // _typeItem(context, Icons.grid_on, 'srt0', 0),
+                              _typeItem(
+                                  context, MdiIcons.contentCopy, '이미지 복사', 1),
+                              _typeItem(
+                                  context, MdiIcons.download, '이미지 다운로드', 2),
+                              _typeItem(context, MdiIcons.share, '이미지 공유', 3),
+                              Expanded(
+                                child: Container(),
+                              )
+                            ]
+                          : <Widget>[
+                              // _typeItem(context, Icons.grid_on, 'srt0', 0),
+                              _typeItem(
+                                  context, MdiIcons.contentCopy, '링크 주소 복사', 0),
+                              _typeItem(
+                                  context,
+                                  MdiIcons.clipboardTextMultipleOutline,
+                                  '링크 텍스트 복사',
+                                  1),
+                              _typeItem(context, MdiIcons.share, '링크 공유', 2),
+                              // _typeItem(context, MdiIcons.trashCanOutline, '삭제', 2),
+                              // _typeItem(context, MdiIcons.viewAgendaOutline, 'srt2', 2),
+                              Expanded(
+                                child: Container(),
+                              )
+                            ],
                     ),
                   ),
                 ),

@@ -74,7 +74,7 @@ class _ScrapPageState extends State<ScrapPage> {
             Expanded(
               child: ListView.separated(
                 padding: EdgeInsets.zero,
-                addAutomaticKeepAlives: false,
+                // addAutomaticKeepAlives: false,
                 itemBuilder: (c, i) => ArticleWidget(
                   key: ValueKey(scraps[scraps.length - i - 1].url),
                   articleInfo: scraps[scraps.length - i - 1],

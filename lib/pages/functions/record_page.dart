@@ -74,7 +74,7 @@ class _RecordPageState extends State<RecordPage> {
             Expanded(
               child: ListView.separated(
                 padding: EdgeInsets.zero,
-                addAutomaticKeepAlives: false,
+                // addAutomaticKeepAlives: false,
                 itemBuilder: (c, i) => ArticleWidget(
                   key: ValueKey(record[record.length - i - 1].url),
                   articleInfo: record[record.length - i - 1],

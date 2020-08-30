@@ -77,6 +77,7 @@ void main() async {
   await Hive.openBox('scraps');
   await Hive.openBox('record');
   await Hive.openBox('filter');
+  await Hive.openBox('fcm');
 
   var _random = Random();
   var rr = _random.nextInt(10) + 2;
@@ -114,7 +115,7 @@ void main() async {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: theme,
-          home: MainPage(gg),
+          home: MainPage(gg, false, true),
         );
       },
     ),

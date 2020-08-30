@@ -3,6 +3,7 @@
 
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:communityexplorer/component/board_manager.dart';
 import 'package:communityexplorer/component/component_manager.dart';
 import 'package:communityexplorer/component/interface.dart';
@@ -13,6 +14,7 @@ import 'package:communityexplorer/settings/settings.dart';
 import 'package:communityexplorer/widget/toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
@@ -79,16 +81,18 @@ class _ArticleWidgetState extends State<ArticleWidget> {
   Widget build(BuildContext context) {
     // var windowWidth = MediaQuery.of(context).size.width;
 
-    var display = AnimatedContainer(
-      foregroundDecoration: viewed
-          ? BoxDecoration(
-              color: Settings.themeWhat
-                  ? Colors.grey.shade800
-                  : Colors.grey.shade300,
-              backgroundBlendMode: BlendMode.saturation,
-            )
-          : null,
-      duration: Duration(milliseconds: 300),
+    // var display = AnimatedContainer(
+    //   duration: Duration(milliseconds: 300),
+    //   height: widget.viewType == 0 ? 80 : 50,
+    //   child: Stack(
+    //     children: <Widget>[
+    //       _body(),
+    //       _inkwell(),
+    //     ],
+    //   ),
+    // );
+
+    var display = Container(
       height: widget.viewType == 0 ? 80 : 50,
       child: Stack(
         children: <Widget>[
@@ -108,7 +112,16 @@ class _ArticleWidgetState extends State<ArticleWidget> {
     //   );
     // }
 
-    return display;
+    return Container(
+        foregroundDecoration: viewed
+            ? BoxDecoration(
+                color: Settings.themeWhat
+                    ? Colors.grey.shade800
+                    : Colors.grey.shade300,
+                backgroundBlendMode: BlendMode.saturation,
+              )
+            : null,
+        child: display);
   }
 
   String numberWithComma(int param) {
@@ -129,7 +142,8 @@ class _ArticleWidgetState extends State<ArticleWidget> {
           Expanded(
             child: Padding(
               padding: EdgeInsets.symmetric(
-                  horizontal: 8, vertical: widget.viewType == 0 ? 6 : 3),
+                  horizontal: widget.articleInfo.thumbnail != null ? 8 : 2,
+                  vertical: widget.viewType == 0 ? 6 : 3),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -144,14 +158,20 @@ class _ArticleWidgetState extends State<ArticleWidget> {
             width: widget.viewType == 0 ? 50 : 40,
             height: widget.viewType == 0 ? 80 : 50,
             child: Container(
-              color: Settings.themeWhat ? Colors.grey.shade600 : Colors.white,
+              color: Settings.themeWhat
+                  ? viewed ? Colors.grey.shade800 : Colors.grey.shade600
+                  : viewed ? Colors.grey.shade50 : Colors.white,
               child: Center(
                 child: Text(
                   widget.articleInfo.comment.toString(),
                   style: TextStyle(
-                      color: Settings.themeWhat
-                          ? Colors.grey.shade100
-                          : Color(0xFFd22227)),
+                      color: viewed
+                          ? Settings.themeWhat
+                              ? Colors.grey.shade700
+                              : Colors.grey.shade300
+                          : Settings.themeWhat
+                              ? Colors.grey.shade100
+                              : Color(0xFFd22227)),
                 ),
               ),
             ),
@@ -162,15 +182,25 @@ class _ArticleWidgetState extends State<ArticleWidget> {
   }
 
   _thumbnail() {
+    // return widget.articleInfo.thumbnail != null
+    //     ? AnimatedContainer(
+    //         child: Image.network(
+    //           widget.articleInfo.thumbnail,
+    //           fit: BoxFit.cover,
+    //         ),
+    //         width: widget.viewType == 0 ? 80 : 50,
+    //         height: widget.viewType == 0 ? 80 : 50,
+    //         duration: Duration(milliseconds: 300),
+    //       )
+    //     : Container();
+
     return widget.articleInfo.thumbnail != null
-        ? AnimatedContainer(
-            child: Image.network(
-              widget.articleInfo.thumbnail,
-              fit: BoxFit.cover,
-            ),
+        ? CachedNetworkImage(
+            imageUrl: widget.articleInfo.thumbnail,
+            fit: BoxFit.cover,
             width: widget.viewType == 0 ? 80 : 50,
             height: widget.viewType == 0 ? 80 : 50,
-            duration: Duration(milliseconds: 300),
+            // cacheHeight: widget.viewType == 0 ? 80 : 50,
           )
         : Container();
   }
@@ -189,7 +219,9 @@ class _ArticleWidgetState extends State<ArticleWidget> {
                   ? TextStyle(
                       fontSize: widget.viewType == 0 ? 15 : 14,
                       fontWeight: FontWeight.normal,
-                      color: Colors.grey)
+                      color: Settings.themeWhat
+                          ? Colors.grey.shade700
+                          : Colors.grey.shade300)
                   : TextStyle(
                       fontSize: widget.viewType == 0 ? 15 : 14,
                       fontWeight: FontWeight.normal),
@@ -249,7 +281,13 @@ class _ArticleWidgetState extends State<ArticleWidget> {
             Container(width: 1),
             Text(
               '· ' + c.shortName(),
-              style: TextStyle(fontSize: 12),
+              style: TextStyle(
+                  fontSize: 12,
+                  color: viewed
+                      ? Settings.themeWhat
+                          ? Colors.grey.shade700
+                          : Colors.grey.shade300
+                      : null),
             ),
             Container(width: 1),
           ],
@@ -276,7 +314,11 @@ class _ArticleWidgetState extends State<ArticleWidget> {
             ? widget.articleInfo.page.board.extractor
             : widget.articleInfo.extractor));
     double fontSize = widget.viewType == 0 ? 15 : 12;
-    Color color = widget.viewType == 1 ? Colors.grey : null;
+    Color color = widget.viewType == 1
+        ? viewed
+            ? Settings.themeWhat ? Colors.grey.shade700 : Colors.grey.shade300
+            : Colors.grey
+        : null;
 
     return Expanded(
       child: Row(
@@ -345,7 +387,9 @@ class _ArticleWidgetState extends State<ArticleWidget> {
   }
 
   _info() {
-    Color color = Colors.grey;
+    Color color = viewed
+        ? Settings.themeWhat ? Colors.grey.shade700 : Colors.grey.shade300
+        : null;
     return Expanded(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -467,6 +511,24 @@ class _ArticleWidgetState extends State<ArticleWidget> {
               await showDialog(
                 context: context,
                 child: ReportPage(articleInfo: widget.articleInfo),
+              );
+            } else if (v == 3) {
+              var extractor = ComponentManager.instance.getExtractorByName(
+                  (widget.articleInfo.page != null
+                      ? widget.articleInfo.page.board.extractor
+                      : widget.articleInfo.extractor));
+
+              var url = extractor.toMobile(widget.articleInfo.url);
+
+              Clipboard.setData(ClipboardData(text: url));
+              FlutterToast(context).showToast(
+                child: ToastWrapper(
+                  isCheck: true,
+                  isWarning: false,
+                  msg: '복사되었습니다!',
+                ),
+                gravity: ToastGravity.BOTTOM,
+                toastDuration: Duration(seconds: 4),
               );
             }
           },

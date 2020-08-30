@@ -11,17 +11,21 @@ import 'package:communityexplorer/settings/settings.dart';
 import 'package:communityexplorer/widget/inner_drawer.dart';
 import 'package:communityexplorer/widget/toast.dart';
 import 'package:firebase_admob/firebase_admob.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hive/hive.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class MainPage extends StatefulWidget {
   final BoardManager boardManager;
   final bool disableLeft;
+  final bool isRootPage;
 
-  MainPage(this.boardManager, [this.disableLeft = false]);
+  MainPage(this.boardManager,
+      [this.disableLeft = false, this.isRootPage = false]);
 
   @override
   _MainPageState createState() => _MainPageState();
@@ -33,9 +37,10 @@ class _MainPageState extends State<MainPage> {
 
   List<ArticleInfo> articles;
 
-  // List<String> items = ["1", "2", "3", "4", "5", "6", "7", "8"];
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
+
+  FirebaseMessaging _firebaseMessaging;
 
   static MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
     keywords: <String>['flutterio', 'beautiful apps'],
@@ -83,6 +88,35 @@ class _MainPageState extends State<MainPage> {
       }
       setState(() {});
     });
+
+    if (widget.isRootPage) {
+      _firebaseMessaging = FirebaseMessaging();
+      _firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) async {
+          print("onMessage: $message");
+          // _showItemDialog(message);
+        },
+        onLaunch: (Map<String, dynamic> message) async {
+          print("onLaunch: $message");
+          // _navigateToItemDetail(message);
+        },
+        onResume: (Map<String, dynamic> message) async {
+          print("onResume: $message");
+          // _navigateToItemDetail(message);
+        },
+      );
+      _firebaseMessaging.requestNotificationPermissions(
+          const IosNotificationSettings(
+              sound: true, badge: true, alert: true, provisional: true));
+      _firebaseMessaging.onIosSettingsRegistered
+          .listen((IosNotificationSettings settings) {
+        print("Settings registered: $settings");
+      });
+      _firebaseMessaging.getToken().then((String token) async {
+        assert(token != null);
+        await Hive.box('fcm').put('token', token);
+      });
+    }
   }
 
   void _onRefresh() async {
@@ -108,15 +142,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    // final statusBarHeight = MediaQuery.of(context).padding.top;
     final width = MediaQuery.of(context).size.width;
-    final height =
-        MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
-
-    // return InAppWebView(
-    //     initialUrl:
-    //         'http://web.humoruniv.com/board/humor/read.html?table=pds&pg=0&number=991460',
-    //     initialHeaders: {'User-Agent': HttpWrapper.mobileUserAgent});
 
     return InnerDrawer(
       key: _innerDrawerKey,
@@ -125,7 +151,9 @@ class _MainPageState extends State<MainPage> {
       colorTransitionScaffold: Colors.black12,
       offset: IDOffset.only(
         bottom: 0.00,
+        // 160: 왼쪽 drawer 너비
         left: (width - 160) / width,
+        // 60: 오른쪽 drawer 너비
         right: (width - 60) / width,
       ),
       scale: IDOffset.horizontal(1.0),
@@ -152,50 +180,51 @@ class _MainPageState extends State<MainPage> {
               boardManager: widget.boardManager,
             ),
       scaffold: Scaffold(
-        body: articles == null
-            ? Container()
-            // : Padding(
-            //     padding: EdgeInsets.only(top: statusBarHeight),
-            : SafeArea(
-                child: SmartRefresher(
-                  enablePullDown: true,
-                  enablePullUp: true,
-                  header: ClassicHeader(
-                    refreshingText: '가져오는 중...',
-                    completeText: '',
-                    idleText: '새로고침하려면 당기세요',
-                    releaseText: '놓아서 새로고침',
-                    completeDuration: Duration(milliseconds: 0),
-                    completeIcon: null,
-                  ),
-                  footer: ClassicFooter(
-                    loadingText: '가져오는 중...',
-                    idleText: '더보기',
-                    noDataText: '데이터가 없습니다 :(',
-                    canLoadingText: '',
-                    failedText: '실패 :(',
-                  ),
-                  controller: _refreshController,
-                  onRefresh: _onRefresh,
-                  onLoading: _onLoading,
-                  child: ListView.separated(
-                    addAutomaticKeepAlives: false,
-                    itemBuilder: (c, i) => ArticleWidget(
-                      key: ValueKey(articles[i].url),
-                      articleInfo: articles[i],
-                      viewType: Settings.viewType,
-                      boardManager: widget.boardManager,
-                    ),
-                    // itemExtent: 50.0,
-                    itemCount: articles.length,
-                    separatorBuilder: (context, index) {
-                      return Divider(
-                        height: 2,
-                      );
-                    },
-                  ),
-                ),
-              ),
+        body: articles == null ? Container() : _itemList(),
+      ),
+    );
+  }
+
+  _itemList() {
+    return SafeArea(
+      child: SmartRefresher(
+        enablePullDown: true,
+        enablePullUp: true,
+        header: ClassicHeader(
+          refreshingText: '가져오는 중...',
+          completeText: '',
+          idleText: '새로고침하려면 당기세요',
+          releaseText: '놓아서 새로고침',
+          completeDuration: Duration(milliseconds: 0),
+          completeIcon: null,
+        ),
+        footer: ClassicFooter(
+          loadingText: '가져오는 중...',
+          idleText: '더보기',
+          noDataText: '데이터가 없습니다 :(',
+          canLoadingText: '',
+          failedText: '실패 :(',
+        ),
+        controller: _refreshController,
+        onRefresh: _onRefresh,
+        onLoading: _onLoading,
+        child: ListView.separated(
+          // addAutomaticKeepAlives: false,
+          itemBuilder: (c, i) => ArticleWidget(
+            key: ValueKey(articles[i].url),
+            articleInfo: articles[i],
+            viewType: Settings.viewType,
+            boardManager: widget.boardManager,
+          ),
+          // cacheExtent: height * 3,
+          // itemExtent: 50.0,
+          itemCount: articles.length,
+          separatorBuilder: (context, index) {
+            return Divider(
+              height: 2,
+            );
+          },
+        ),
       ),
     );
   }
