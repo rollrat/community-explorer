@@ -1,16 +1,10 @@
-# communityexplorer
+# community-explorer
 
-A new Flutter project.
+각종 커뮤니티를 구독하고 최신 게시글을 모아볼 수 있는 서비스 앱
 
-## Getting Started
+https://play.google.com/store/apps/details?id=xyz.violet.communityexplorer
 
-This project is a starting point for a Flutter application.
+## 특징
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+ - [xpath-to-queryselector](https://github.com/rollrat/community-explorer/blob/master/lib/other/xpath_to_selector.dart) 등 [커스텀 크롤러](https://github.com/rollrat/custom-crawler)와 직접 연계할 수 있는 모듈을 이용하여 파서 작성 시간 단축
+ - Rust 기반 Native 다운로더 모듈로 빠른 다중 다운로드 실행
