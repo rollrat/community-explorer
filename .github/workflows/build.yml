@@ -1,9 +1,9 @@
 name: Test-App-Build
 on:
   push:
-    branches: [dev]
+    branches: [master]
   pull_request:
-    branches: [dev]
+    branches: [master]
 
 jobs:
   android-build:
@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: dev
+          ref: master
       - uses: actions/setup-java@v1
         with:
           java-version: "12.x"
