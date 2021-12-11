@@ -92,7 +92,7 @@ namespace dcinside_tool
 
         static void Main(string[] args)
         {
-            foreach (var x in GetGalleryList())
+            foreach (var x in GetMinorGalleryList())
             {
                 Console.WriteLine($"\"{x.Key}\": \"{x.Value}\",");
             }
