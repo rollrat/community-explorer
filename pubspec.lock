@@ -139,8 +139,8 @@ packages:
     description:
       path: "."
       ref: master
-      resolved-ref: d4fecdab49e7ea467b795573de167ffbc6cd07b1
-      url: "https://github.com/thuette/circular_check_box"
+      resolved-ref: f9aed9d83dcabf4ee8f8abd78c9c57d0388edede
+      url: "https://github.com/liubaishui/circular_check_box"
     source: git
     version: "1.0.3"
   cli_util:

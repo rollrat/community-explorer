@@ -37,7 +37,7 @@ dependencies:
   path_provider:
   circular_check_box:
     git:
-      url: https://github.com/thuette/circular_check_box
+      url: https://github.com/liubaishui/circular_check_box
       ref: master
   synchronized:
   fluttertoast: ^6.0.1
