@@ -16,10 +16,10 @@ import 'package:hive/hive.dart';
 // 이 클래스는 그룹에 관한 정보를 가지고있다
 // 따로 분리한 이유는 '이 게시판만 열기' 기능을 구현하려고 했기 떄문이다
 class BoardFixed {
-  List<ArticleInfo> _scraps = List<ArticleInfo>();
+  List<ArticleInfo> _scraps = <ArticleInfo>[];
   HashSet<String> _scrapURLS = HashSet<String>();
-  List<ArticleInfo> _record = List<ArticleInfo>();
-  List<String> _filter = List<String>();
+  List<ArticleInfo> _record = <ArticleInfo>[];
+  List<String> _filter = <String>[];
   String name;
 
   BoardFixed(String name) {
@@ -34,15 +34,15 @@ class BoardFixed {
     var filtert = Hive.box('filter')
         .get(base64.encode(utf8.encode(name)), defaultValue: '[]');
     if (scrapt == '') {
-      _scraps = List<ArticleInfo>();
+      _scraps = <ArticleInfo>[];
       await saveScrap();
     }
     if (recordt == '') {
-      _record = List<ArticleInfo>();
+      _record = <ArticleInfo>[];
       await saveRecord();
     }
     if (filtert == '') {
-      _filter = List<String>();
+      _filter = <String>[];
       await saveFilter();
     }
 
@@ -125,7 +125,7 @@ class BoardFixed {
 class BoardManager {
   BoardGroup _group;
   BoardFixed _fixed;
-  List<ArticleInfo> _articles = List<ArticleInfo>();
+  List<ArticleInfo> _articles = <ArticleInfo>[];
   PriorityQueue<ArticleInfo> _queue =
       PriorityQueue<ArticleInfo>((a, b) => b.writeTime.compareTo(a.writeTime));
 
@@ -156,7 +156,7 @@ class BoardManager {
   static List<String> getGlobalFilter() {
     var filtert = Hive.box('filter').get('global', defaultValue: '[]');
     if (filtert == '') {
-      return List<String>();
+      return <String>[];
     }
     return (jsonDecode(filtert) as List<dynamic>)
         .map((e) => e as String)
@@ -187,11 +187,11 @@ class BoardManager {
         .get(base64.encode(utf8.encode(group)), defaultValue: '');
     if (group == '구독' && groupt == '') {
       _group = BoardGroup(
-        boards: List<BoardInfo>(),
+        boards: <BoardInfo>[],
         name: '구독',
         subname: '일반',
         color: Colors.purple,
-        subGroups: List<SubGroupInfo>(),
+        subGroups: <SubGroupInfo>[],
       );
       await saveGroup();
     }
@@ -241,7 +241,7 @@ class BoardManager {
   //
 
   Future<List<ArticleInfo>> init() async {
-    _articles = List<ArticleInfo>();
+    _articles = <ArticleInfo>[];
     _queue = PriorityQueue<ArticleInfo>(
         (a, b) => b.writeTime.compareTo(a.writeTime));
 
@@ -334,7 +334,7 @@ class BoardManager {
 
     _tidy();
 
-    var nn = List<ArticleInfo>();
+    var nn = <ArticleInfo>[];
 
     while (_articles.first.writeTime.compareTo(_queue.first.writeTime) < 0) {
       nn.add(_queue.removeFirst());
@@ -420,7 +420,7 @@ class BoardManager {
 
   List<ArticleInfo> _distinct(List<ArticleInfo> info) {
     var hset = HashSet<String>();
-    var ll = List<ArticleInfo>();
+    var ll = <ArticleInfo>[];
 
     info.forEach((element) {
       if (hset.contains(element.url)) return;

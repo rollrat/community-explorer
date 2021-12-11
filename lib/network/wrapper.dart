@@ -16,30 +16,28 @@ class HttpWrapper {
 
   // 오류 처리를 간단하게 하기 위해 랩핑했다.
 
-  static Future<http.Response> getr(String url,
-      {Map<String, String> headers}) async {
-    // Logger.info('[Http Request] GET: ' + url);
-    var res = await http.get(url, headers: headers);
-    if (res.statusCode != 200) {
-      Logger.warning('[Http Response] CODE: ' +
-          res.statusCode.toString() +
-          ', GET: ' +
-          url);
-    }
-    return res;
-  }
+}
 
-  static Future<http.Response> post(String url,
-      {Map<String, String> headers, dynamic body, Encoding encoding}) async {
-    // Logger.info('[Http Request] POST: ' + url);
-    var res =
-        await http.post(url, headers: headers, body: body, encoding: encoding);
-    if (res.statusCode != 200) {
-      Logger.warning('[Http Response] CODE: ' +
-          res.statusCode.toString() +
-          ', POST: ' +
-          url);
-    }
-    return res;
+Future<http.Response> get(String url, {Map<String, String> headers}) async {
+  // Logger.info('[Http Request] GET: ' + url);
+  var res = await http.get(url, headers: headers);
+  if (res.statusCode != 200) {
+    Logger.warning(
+        '[Http Response] CODE: ' + res.statusCode.toString() + ', GET: ' + url);
   }
+  return res;
+}
+
+Future<http.Response> post(String url,
+    {Map<String, String> headers, dynamic body, Encoding encoding}) async {
+  // Logger.info('[Http Request] POST: ' + url);
+  var res =
+      await http.post(url, headers: headers, body: body, encoding: encoding);
+  if (res.statusCode != 200) {
+    Logger.warning('[Http Response] CODE: ' +
+        res.statusCode.toString() +
+        ', POST: ' +
+        url);
+  }
+  return res;
 }

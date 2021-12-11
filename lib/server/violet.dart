@@ -4,7 +4,7 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:communityexplorer/network/wrapper.dart';
+import 'package:communityexplorer/network/wrapper.dart' as http;
 import 'package:hive/hive.dart';
 
 // xc는 서버에서 정상적인 제출인지를 확인하기 위해 사용한다.
@@ -24,7 +24,7 @@ class Violet {
     yy += (rnd.nextInt(9) + 1).toString();
     for (int i = 0; i < 4; i++) yy += rnd.nextInt(10).toString();
     for (int i = 0; i < 5; i++) zz += rnd.nextInt(10).toString();
-    return (await HttpWrapper.post(surl + '/api/report',
+    return (await http.post(surl + '/api/report',
             body: jsonEncode({
               "id": id,
               "title": title,
@@ -47,7 +47,7 @@ class Violet {
     yy += (rnd.nextInt(9) + 1).toString();
     for (int i = 0; i < 4; i++) yy += rnd.nextInt(10).toString();
     for (int i = 0; i < 5; i++) zz += rnd.nextInt(10).toString();
-    return (await HttpWrapper.post(surl + '/api/contact',
+    return (await http.post(surl + '/api/contact',
             body: jsonEncode({
               "id": id,
               "title": title,
@@ -61,7 +61,7 @@ class Violet {
   static Future<String> report(
       String url, String id, String title, String body) async {
     var token = Hive.box('fcm').get('token');
-    return (await HttpWrapper.post(surl + '/api/report',
+    return (await http.post(surl + '/api/report',
             body: jsonEncode({
               "token": token,
               "title": title,
@@ -73,7 +73,7 @@ class Violet {
 
   static Future<String> contact(String id, String title, String body) async {
     var token = Hive.box('fcm').get('token');
-    return (await HttpWrapper.post(surl + '/api/contact',
+    return (await http.post(surl + '/api/contact',
             body: jsonEncode({
               "token": token,
               "title": title,

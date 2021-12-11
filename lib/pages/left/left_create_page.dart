@@ -7,6 +7,7 @@ import 'package:communityexplorer/component/board_manager.dart';
 import 'package:communityexplorer/component/component_manager.dart';
 import 'package:communityexplorer/component/interface.dart';
 import 'package:communityexplorer/network/wrapper.dart';
+import 'package:communityexplorer/network/wrapper.dart' as http;
 import 'package:communityexplorer/other/dialogs.dart';
 import 'package:communityexplorer/settings/settings.dart';
 import 'package:flutter/material.dart';
@@ -321,7 +322,7 @@ class _CreateSubscribePageState extends State<CreateSubscribePage> {
                 '${e.key}=${Uri.encodeQueryComponent(e.value.toString())}')
             .join('&');
 
-    var html = (await HttpWrapper.getr(
+    var html = (await http.get(
       url,
       headers: {
         'Accept': HttpWrapper.accept,
