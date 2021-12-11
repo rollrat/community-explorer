@@ -137,10 +137,12 @@ packages:
   circular_check_box:
     dependency: "direct main"
     description:
-      name: circular_check_box
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.4"
+      path: "."
+      ref: master
+      resolved-ref: d4fecdab49e7ea467b795573de167ffbc6cd07b1
+      url: "https://github.com/thuette/circular_check_box"
+    source: git
+    version: "1.0.3"
   cli_util:
     dependency: transitive
     description:

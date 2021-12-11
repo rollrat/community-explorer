@@ -35,7 +35,10 @@ dependencies:
   material_design_icons_flutter:
   url_launcher:
   path_provider:
-  circular_check_box: ^1.0.1
+  circular_check_box:
+    git:
+      url: https://github.com/thuette/circular_check_box
+      ref: master
   synchronized:
   fluttertoast: ^6.0.1
   hive: ^1.4.1+1
