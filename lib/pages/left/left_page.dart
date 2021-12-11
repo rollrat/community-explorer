@@ -105,7 +105,9 @@ class LeftPage extends StatelessWidget {
                       onTap: () async {
                         var v = await showDialog(
                           context: context,
-                          child: LeftCreateSelector(),
+                          builder: (BuildContext context) {
+                            return LeftCreateSelector();
+                          },
                         );
 
                         if (v == null) return;
@@ -113,18 +115,22 @@ class LeftPage extends StatelessWidget {
                         if (v == 0) {
                           await showDialog(
                             context: context,
-                            child: CreateSubscribePage(
-                              boardManager: boardManager,
-                            ),
+                            builder: (BuildContext context) {
+                              return CreateSubscribePage(
+                                boardManager: boardManager,
+                              );
+                            },
                           );
 
                           updateMain();
                         } else if (v == 1) {
                           await showDialog(
                             context: context,
-                            child: CreateGroupPage(
-                              boardManager: boardManager,
-                            ),
+                            builder: (BuildContext context) {
+                              return CreateGroupPage(
+                                boardManager: boardManager,
+                              );
+                            },
                           );
                         }
                       },
@@ -224,7 +230,9 @@ class __CheckState extends State<_Check> with TickerProviderStateMixin {
       onLongPress: () async {
         var v = await showDialog(
           context: context,
-          child: LeftItemSelector(false),
+          builder: (BuildContext context) {
+            return LeftItemSelector(false);
+          },
         );
 
         if (v == null) return;
@@ -328,7 +336,9 @@ class __GroupState extends State<_Group> with TickerProviderStateMixin {
       onLongPress: () async {
         var v = await showDialog(
           context: context,
-          child: LeftItemSelector(true),
+          builder: (BuildContext context) {
+            return LeftItemSelector(true);
+          },
         );
 
         if (v == null) return;

@@ -325,7 +325,9 @@ class _RightPageState extends State<RightPage> with TickerProviderStateMixin {
                       onTap: () async {
                         await showDialog(
                           context: context,
-                          child: ContactPage(),
+                          builder: (BuildContext context) {
+                            return ContactPage();
+                          },
                         );
                       },
                     ),

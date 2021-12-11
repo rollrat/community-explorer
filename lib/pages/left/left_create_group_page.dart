@@ -260,43 +260,45 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
 
                     showDialog(
                       context: context,
-                      child: AlertDialog(
-                        // title: const Text('Pick a color!'),
-                        titlePadding: const EdgeInsets.all(0.0),
-                        contentPadding: const EdgeInsets.all(0.0),
-                        content: SingleChildScrollView(
-                          // child: ColorPicker(
-                          //   pickerColor: _selectedColor,
-                          //   onColorChanged: changeColor,
-                          //   showLabel: true,
-                          //   pickerAreaHeightPercent: 0.8,
-                          // ),
-                          // Use Material color picker:
-                          //
-                          child: MaterialPicker(
-                            pickerColor: _selectedColor,
-                            onColorChanged: changeColor,
-                            enableLabel: true,
-                            // showLabel: true, // only on portrait mode
-                          ),
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          // title: const Text('Pick a color!'),
+                          titlePadding: const EdgeInsets.all(0.0),
+                          contentPadding: const EdgeInsets.all(0.0),
+                          content: SingleChildScrollView(
+                            // child: ColorPicker(
+                            //   pickerColor: _selectedColor,
+                            //   onColorChanged: changeColor,
+                            //   showLabel: true,
+                            //   pickerAreaHeightPercent: 0.8,
+                            // ),
+                            // Use Material color picker:
+                            //
+                            child: MaterialPicker(
+                              pickerColor: _selectedColor,
+                              onColorChanged: changeColor,
+                              enableLabel: true,
+                              // showLabel: true, // only on portrait mode
+                            ),
 
-                          // Use Block color picker:
-                          //
-                          // child: BlockPicker(
-                          //   pickerColor: currentColor,
-                          //   onColorChanged: changeColor,
-                          // ),
-                        ),
-                        // actions: <Widget>[
-                        //   FlatButton(
-                        //     child: const Text('Got it'),
-                        //     onPressed: () {
-                        //       setState(() => currentColor = pickerColor);
-                        //       Navigator.of(context).pop();
-                        //     },
-                        //   ),
-                        // ],
-                      ),
+                            // Use Block color picker:
+                            //
+                            // child: BlockPicker(
+                            //   pickerColor: currentColor,
+                            //   onColorChanged: changeColor,
+                            // ),
+                          ),
+                          // actions: <Widget>[
+                          //   FlatButton(
+                          //     child: const Text('Got it'),
+                          //     onPressed: () {
+                          //       setState(() => currentColor = pickerColor);
+                          //       Navigator.of(context).pop();
+                          //     },
+                          //   ),
+                          // ],
+                        );
+                      },
                     );
                   },
                 )),

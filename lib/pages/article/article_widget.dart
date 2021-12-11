@@ -159,8 +159,12 @@ class _ArticleWidgetState extends State<ArticleWidget> {
             height: widget.viewType == 0 ? 80 : 50,
             child: Container(
               color: Settings.themeWhat
-                  ? viewed ? Colors.grey.shade800 : Colors.grey.shade600
-                  : viewed ? Colors.grey.shade50 : Colors.white,
+                  ? viewed
+                      ? Colors.grey.shade800
+                      : Colors.grey.shade600
+                  : viewed
+                      ? Colors.grey.shade50
+                      : Colors.white,
               child: Center(
                 child: Text(
                   widget.articleInfo.comment.toString(),
@@ -316,7 +320,9 @@ class _ArticleWidgetState extends State<ArticleWidget> {
     double fontSize = widget.viewType == 0 ? 15 : 12;
     Color color = widget.viewType == 1
         ? viewed
-            ? Settings.themeWhat ? Colors.grey.shade700 : Colors.grey.shade300
+            ? Settings.themeWhat
+                ? Colors.grey.shade700
+                : Colors.grey.shade300
             : Colors.grey
         : null;
 
@@ -388,7 +394,9 @@ class _ArticleWidgetState extends State<ArticleWidget> {
 
   _info() {
     Color color = viewed
-        ? Settings.themeWhat ? Colors.grey.shade700 : Colors.grey.shade300
+        ? Settings.themeWhat
+            ? Colors.grey.shade700
+            : Colors.grey.shade300
         : null;
     return Expanded(
       child: Row(
@@ -469,9 +477,11 @@ class _ArticleWidgetState extends State<ArticleWidget> {
           onLongPress: () async {
             var v = await showDialog(
               context: context,
-              child: ArticleSelector(widget.boardManager
-                  .getFixed()
-                  .isScrapred(widget.articleInfo.url)),
+              builder: (BuildContext context) {
+                return ArticleSelector(widget.boardManager
+                    .getFixed()
+                    .isScrapred(widget.articleInfo.url));
+              },
             );
 
             if (v == 0) {
@@ -510,7 +520,9 @@ class _ArticleWidgetState extends State<ArticleWidget> {
             } else if (v == 2) {
               await showDialog(
                 context: context,
-                child: ReportPage(articleInfo: widget.articleInfo),
+                builder: (BuildContext context) {
+                  return ReportPage(articleInfo: widget.articleInfo);
+                },
               );
             } else if (v == 3) {
               var extractor = ComponentManager.instance.getExtractorByName(

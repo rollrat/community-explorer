@@ -244,7 +244,9 @@ class _ViewPageState extends State<ViewPage> {
           onPressed: () async {
             await showDialog(
               context: context,
-              child: ReportPage(articleInfo: widget.articleInfo),
+              builder: (BuildContext context) {
+                return ReportPage(articleInfo: widget.articleInfo);
+              },
             );
           },
         ),
