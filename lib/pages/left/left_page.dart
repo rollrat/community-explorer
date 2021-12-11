@@ -189,7 +189,7 @@ class __CheckState extends State<_Check> with TickerProviderStateMixin {
       child: Row(
         children: [
           CircularCheckBox(
-            inactiveColor: color,
+            // inactiveColor: color,
             activeColor: color,
             value: widget.board.isEnabled,
             materialTapTargetSize: MaterialTapTargetSize.padded,
@@ -292,7 +292,7 @@ class __GroupState extends State<_Group> with TickerProviderStateMixin {
       child: Row(
         children: [
           CircularCheckBox(
-            inactiveColor: widget.subgroup.color,
+            // inactiveColor: widget.subgroup.color,
             activeColor: widget.subgroup.color,
             checkColor: widget.subgroup.color,
             value: true,
