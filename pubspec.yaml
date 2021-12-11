@@ -56,10 +56,10 @@ dependencies:
   # flutter_webview_plugin:
   share:
   # webview_flutter:
-  flutter_inappwebview:
-    git:
-      url: https://github.com/pichillilorenzo/flutter_inappwebview
-      ref: master
+  flutter_inappwebview: ^5.3.2
+    # git:
+    #   url: https://github.com/pichillilorenzo/flutter_inappwebview
+    #   ref: master
   ffi: ^1.1.2
   permission_handler:
   ext_storage: ^1.0.3
