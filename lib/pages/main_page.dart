@@ -11,7 +11,7 @@ import 'package:communityexplorer/settings/settings.dart';
 import 'package:communityexplorer/widget/inner_drawer.dart';
 import 'package:communityexplorer/widget/toast.dart';
 // import 'package:firebase_admob/firebase_admob.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -40,7 +40,7 @@ class _MainPageState extends State<MainPage> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
-  FirebaseMessaging _firebaseMessaging;
+  // FirebaseMessaging _firebaseMessaging;
 
   // static MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
   //   keywords: <String>['flutterio', 'beautiful apps'],
@@ -91,34 +91,34 @@ class _MainPageState extends State<MainPage> {
       });
     });
 
-    if (widget.isRootPage) {
-      _firebaseMessaging = FirebaseMessaging();
-      _firebaseMessaging.configure(
-        onMessage: (Map<String, dynamic> message) async {
-          print("onMessage: $message");
-          // _showItemDialog(message);
-        },
-        onLaunch: (Map<String, dynamic> message) async {
-          print("onLaunch: $message");
-          // _navigateToItemDetail(message);
-        },
-        onResume: (Map<String, dynamic> message) async {
-          print("onResume: $message");
-          // _navigateToItemDetail(message);
-        },
-      );
-      _firebaseMessaging.requestNotificationPermissions(
-          const IosNotificationSettings(
-              sound: true, badge: true, alert: true, provisional: true));
-      _firebaseMessaging.onIosSettingsRegistered
-          .listen((IosNotificationSettings settings) {
-        print("Settings registered: $settings");
-      });
-      _firebaseMessaging.getToken().then((String token) async {
-        assert(token != null);
-        await Hive.box('fcm').put('token', token);
-      });
-    }
+    // if (widget.isRootPage) {
+    //   _firebaseMessaging = FirebaseMessaging();
+    //   _firebaseMessaging.configure(
+    //     onMessage: (Map<String, dynamic> message) async {
+    //       print("onMessage: $message");
+    //       // _showItemDialog(message);
+    //     },
+    //     onLaunch: (Map<String, dynamic> message) async {
+    //       print("onLaunch: $message");
+    //       // _navigateToItemDetail(message);
+    //     },
+    //     onResume: (Map<String, dynamic> message) async {
+    //       print("onResume: $message");
+    //       // _navigateToItemDetail(message);
+    //     },
+    //   );
+    //   _firebaseMessaging.requestNotificationPermissions(
+    //       const IosNotificationSettings(
+    //           sound: true, badge: true, alert: true, provisional: true));
+    //   _firebaseMessaging.onIosSettingsRegistered
+    //       .listen((IosNotificationSettings settings) {
+    //     print("Settings registered: $settings");
+    //   });
+    //   _firebaseMessaging.getToken().then((String token) async {
+    //     assert(token != null);
+    //     await Hive.box('fcm').put('token', token);
+    //   });
+    // }
   }
 
   void _onRefresh() async {

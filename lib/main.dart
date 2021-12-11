@@ -36,13 +36,13 @@ void err(FlutterErrorDetails details) {
   print(details.stack.toString());
 }
 
-void test_main() {
-  runApp(
-    MaterialApp(
-      home: PushMessagingExample(),
-    ),
-  );
-}
+// void test_main() {
+//   runApp(
+//     MaterialApp(
+//       home: PushMessagingExample(),
+//     ),
+//   );
+// }
 
 void main() async {
   // test_main();
