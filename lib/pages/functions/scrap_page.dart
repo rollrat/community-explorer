@@ -9,7 +9,7 @@ import 'package:communityexplorer/pages/right/right_page.dart';
 import 'package:communityexplorer/settings/settings.dart';
 import 'package:communityexplorer/widget/inner_drawer.dart';
 import 'package:communityexplorer/widget/toast.dart';
-import 'package:firebase_admob/firebase_admob.dart';
+// import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -25,22 +25,22 @@ class ScrapPage extends StatefulWidget {
 }
 
 class _ScrapPageState extends State<ScrapPage> {
-  static MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
-    keywords: <String>['flutterio', 'beautiful apps'],
-    contentUrl: 'https://flutter.dev',
-    childDirected: false,
-    testDevices: <String>[],
-  );
+  // static MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+  //   keywords: <String>['flutterio', 'beautiful apps'],
+  //   contentUrl: 'https://flutter.dev',
+  //   childDirected: false,
+  //   testDevices: <String>[],
+  // );
 
-  BannerAd banner = BannerAd(
-    // adUnitId: BannerAd.testAdUnitId,
-    adUnitId: 'ca-app-pub-6003769087560175/8779826423',
-    size: AdSize.banner,
-    targetingInfo: targetingInfo,
-    // listener: (MobileAdEvent event) {
-    //   print("$event");
-    // },
-  );
+  // BannerAd banner = BannerAd(
+  //   // adUnitId: BannerAd.testAdUnitId,
+  //   adUnitId: 'ca-app-pub-6003769087560175/8779826423',
+  //   size: AdSize.banner,
+  //   targetingInfo: targetingInfo,
+  //   // listener: (MobileAdEvent event) {
+  //   //   print("$event");
+  //   // },
+  // );
 
   @override
   void initState() {

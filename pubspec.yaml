@@ -52,7 +52,7 @@ dependencies:
   flutter_colorpicker: ^1.0.2
   firebase_analytics:
   crypto:
-  firebase_admob:
+  # firebase_admob:
   # flutter_webview_plugin:
   share:
   # webview_flutter:

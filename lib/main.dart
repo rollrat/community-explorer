@@ -15,7 +15,7 @@ import 'package:communityexplorer/pages/main_page.dart';
 import 'package:communityexplorer/settings/settings.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
-import 'package:firebase_admob/firebase_admob.dart';
+// import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
@@ -53,8 +53,8 @@ void main() async {
 
   // ca-app-pub-6003769087560175/8779826423
   // FirebaseAdMob.instance.initialize(appId: FirebaseAdMob.testAppId);
-  FirebaseAdMob.instance
-      .initialize(appId: 'ca-app-pub-6003769087560175~3910643124');
+  // FirebaseAdMob.instance
+  //     .initialize(appId: 'ca-app-pub-6003769087560175~3910643124');
 
   var analytics = FirebaseAnalytics();
   var observer = FirebaseAnalyticsObserver(analytics: analytics);
