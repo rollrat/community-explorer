@@ -86,7 +86,9 @@ class _MainPageState extends State<MainPage> {
           toastDuration: Duration(seconds: 4),
         );
       }
-      setState(() {});
+      setState(() {
+        _shouldReload = true;
+      });
     });
 
     if (widget.isRootPage) {
@@ -126,7 +128,9 @@ class _MainPageState extends State<MainPage> {
       print(e);
     }
     _refreshController.refreshCompleted();
-    setState(() {});
+    setState(() {
+      _shouldReload = true;
+    });
   }
 
   void _onLoading() async {
@@ -135,14 +139,28 @@ class _MainPageState extends State<MainPage> {
     } catch (e) {
       print(e);
     }
-    if (mounted) setState(() {});
+    if (mounted)
+      setState(() {
+        _shouldReload = true;
+      });
     _refreshController.loadComplete();
-    setState(() {});
+    setState(() {
+      _shouldReload = true;
+    });
   }
+
+  bool _shouldReload = false;
+  Widget _cachedList;
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+
+    if (_cachedList == null || _shouldReload) {
+      _shouldReload = false;
+      final lists = _itemList();
+      _cachedList = lists;
+    }
 
     return InnerDrawer(
       key: _innerDrawerKey,
@@ -168,19 +186,22 @@ class _MainPageState extends State<MainPage> {
       onDragUpdate: (double val, InnerDrawerDirection direction) {},
       rightChild: RightPage(
         boardManager: widget.boardManager,
-        updateMain: () => setState(() {}),
+        updateMain: () => setState(() {
+          _shouldReload = true;
+        }),
       ),
       leftChild: widget.disableLeft
           ? null
           : LeftPage(
               updateMain: () => setState(() {
+                _shouldReload = true;
                 widget.boardManager.tidy();
                 articles = widget.boardManager.getArticles();
               }),
               boardManager: widget.boardManager,
             ),
       scaffold: Scaffold(
-        body: articles == null ? Container() : _itemList(),
+        body: articles == null ? Container() : _cachedList,
       ),
     );
   }
