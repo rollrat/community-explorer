@@ -83,7 +83,7 @@ class NativeDownloader {
   sync.Lock lock = sync.Lock();
 
   static const platform =
-      const MethodChannel('xyz.violet.communityexplorer/nativelibdir');
+      const MethodChannel('xyz.violet.communityexplorer2/nativelibdir');
   static Directory nativeDir;
 
   // 안드로이드 29이상부터는 외부 바이너리를 실행할 수 없다.

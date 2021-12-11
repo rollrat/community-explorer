@@ -7,7 +7,7 @@ import io.flutter.plugin.common.MethodChannel
 
 class MainActivity: FlutterActivity() {
   
-    private val NATIVELIBDIR_CHANNEL = "xyz.violet.communityexplorer/nativelibdir";
+    private val NATIVELIBDIR_CHANNEL = "xyz.violet.communityexplorer2/nativelibdir";
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)

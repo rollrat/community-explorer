@@ -85,7 +85,7 @@ void main() async {
   var appdir = await getApplicationDocumentsDirectory();
 
   if (Platform.isAndroid) {
-    if (!appdir.path.contains('/xyz.violet.communityexplorer/')) return;
+    if (!appdir.path.contains('/xyz.violet.communityexplorer2/')) return;
   }
 
   var gg = await BoardManager.get('구독');
