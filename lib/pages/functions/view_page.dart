@@ -116,7 +116,6 @@ class _ViewPageState extends State<ViewPage> {
                 onPressed: () async {
                   if (_downloadStart) return;
                   if (await Permission.storage.isPermanentlyDenied ||
-                      await Permission.storage.isUndetermined ||
                       await Permission.storage.isDenied) {
                     if (await Permission.storage.request() ==
                         PermissionStatus.denied) {
@@ -313,8 +312,14 @@ class _ViewPageState extends State<ViewPage> {
                   : Container()),
           Expanded(
             child: InAppWebView(
-              initialUrl: widget.url,
-              initialHeaders: {'User-Agent': HttpWrapper.mobileUserAgent},
+              initialUrlRequest: URLRequest(
+                url: Uri.parse(widget.url),
+                headers: {
+                  'User-Agent': HttpWrapper.mobileUserAgent,
+                },
+              ),
+              // initialUrl: widget.url,
+              // initialHeaders: {'User-Agent': HttpWrapper.mobileUserAgent},
               initialOptions: InAppWebViewGroupOptions(
                   android: AndroidInAppWebViewOptions(
                 useHybridComposition: true,

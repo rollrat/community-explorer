@@ -16,8 +16,8 @@ import 'package:communityexplorer/settings/settings.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 // import 'package:firebase_admob/firebase_admob.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_analytics/observer.dart';
+// import 'package:firebase_analytics/firebase_analytics.dart';
+// import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -56,15 +56,17 @@ void main() async {
   // FirebaseAdMob.instance
   //     .initialize(appId: 'ca-app-pub-6003769087560175~3910643124');
 
-  var analytics = FirebaseAnalytics();
-  var observer = FirebaseAnalyticsObserver(analytics: analytics);
+// var secondaryApp = Firebase.app('SecondaryApp');
+// var analytics = FirebaseAnalytics.instanceFor(app: secondaryApp);
+//   var analytics = FirebaseAnalytics();
+//   var observer = FirebaseAnalyticsObserver(analytics: analytics);
   var id = (await SharedPreferences.getInstance()).getString('fa_userid');
   if (id == null) {
     var ii = sha1.convert(utf8.encode(DateTime.now().toString()));
     id = ii.toString();
     (await SharedPreferences.getInstance()).setString('fa_userid', id);
   }
-  await analytics.setUserId(id);
+  // await analytics.setUserId(id: id);
 
   await Settings.init();
   await Logger.init();
