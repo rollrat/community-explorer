@@ -13,7 +13,7 @@ import 'package:communityexplorer/download/download_task.dart';
 import 'package:communityexplorer/network/wrapper.dart';
 import 'package:communityexplorer/other/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:communityexplorer/network/wrapper.dart' as http;
 
 class ArcaLiveExtractor extends BoardExtractor {
   RegExp urlMatcher;
@@ -73,7 +73,7 @@ class ArcaLiveExtractor extends BoardExtractor {
                 '${e.key}=${Uri.encodeQueryComponent(e.value.toString())}')
             .join('&');
 
-    var html = (await HttpWrapper.getr(
+    var html = (await http.get(
       url,
       headers: {
         'Accept': HttpWrapper.accept,
@@ -123,7 +123,7 @@ class ArcaLiveExtractor extends BoardExtractor {
 
     var result = List<DownloadTask>();
 
-    var g = ArcaLiveParser.parseArticle((await HttpWrapper.getr(url)).body);
+    var g = ArcaLiveParser.parseArticle((await http.get(url)).body);
 
     for (int i = 0; i < g['links'].length; i++) {
       result.add(

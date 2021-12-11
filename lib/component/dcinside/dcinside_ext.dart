@@ -10,7 +10,7 @@ import 'package:communityexplorer/download/download_task.dart';
 import 'package:communityexplorer/network/wrapper.dart';
 import 'package:communityexplorer/other/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:communityexplorer/network/wrapper.dart' as http;
 
 class DCInsideExtractor extends BoardExtractor {
   RegExp urlMatcher;
@@ -81,7 +81,7 @@ class DCInsideExtractor extends BoardExtractor {
                 '${e.key}=${Uri.encodeQueryComponent(e.value.toString())}')
             .join('&');
 
-    var html = (await HttpWrapper.getr(
+    var html = (await http.get(
       url,
       headers: {
         'Accept': HttpWrapper.accept,
@@ -164,7 +164,7 @@ class DCInsideExtractor extends BoardExtractor {
 
     var ismobile = match.first[1] == 'm';
     if (ismobile) {
-      var request = await HttpWrapper.post(url);
+      var request = await http.post(url);
       url = request.headers['location'];
       match = urlMatcher.allMatches(url);
     }
@@ -175,7 +175,7 @@ class DCInsideExtractor extends BoardExtractor {
     var result = List<DownloadTask>();
 
     if (isview) {
-      var g = DCInsideParser.parseBoardView((await HttpWrapper.getr(url)).body);
+      var g = DCInsideParser.parseBoardView((await http.get(url)).body);
 
       for (int i = 0; i < g['il'].length; i++) {
         var fn = g['fn'][i];

@@ -10,7 +10,7 @@ import 'package:communityexplorer/component/interface.dart';
 import 'package:communityexplorer/download/download_task.dart';
 import 'package:communityexplorer/network/wrapper.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:communityexplorer/network/wrapper.dart' as http;
 
 class HuvkrExtractor extends BoardExtractor {
   RegExp urlMatcher;
@@ -82,7 +82,7 @@ class HuvkrExtractor extends BoardExtractor {
 
     var html = await CharsetConverter.decode(
         'euc-kr',
-        (await HttpWrapper.getr(
+        (await http.get(
           url,
           headers: {
             'Accept': HttpWrapper.accept,

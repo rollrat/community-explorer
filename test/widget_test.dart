@@ -31,7 +31,7 @@ void main() {
     // var url = 'https://www.dogdrip.net/doc';
     var url =
         'https://www.dogdrip.net/index.php?mid=gameserial&category=125480378&page=1';
-    var html = (await HttpWrapper.getr(
+    var html = (await http.get(
       url,
       headers: {
         'Accept': HttpWrapper.accept,

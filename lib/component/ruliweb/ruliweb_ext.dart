@@ -12,7 +12,7 @@ import 'package:communityexplorer/download/download_task.dart';
 import 'package:communityexplorer/network/wrapper.dart';
 import 'package:communityexplorer/other/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:communityexplorer/network/wrapper.dart' as http;
 
 class RuliwebExtractor extends BoardExtractor {
   RegExp urlMatcher;
@@ -83,7 +83,7 @@ class RuliwebExtractor extends BoardExtractor {
                 '${e.key}=${Uri.encodeQueryComponent(e.value.toString())}')
             .join('&');
 
-    var html = (await HttpWrapper.getr(
+    var html = (await http.get(
       url,
       headers: {
         'Accept': HttpWrapper.accept,
@@ -144,7 +144,7 @@ class RuliwebExtractor extends BoardExtractor {
 
     var result = List<DownloadTask>();
 
-    var g = RuliwebParser.parseArticle((await HttpWrapper.getr(url, headers: {
+    var g = RuliwebParser.parseArticle((await http.get(url, headers: {
       'Referer': url,
       'User-Agent': HttpWrapper.userAgent,
       'Accept': HttpWrapper.accept,
