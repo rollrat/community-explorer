@@ -36,37 +36,10 @@ void err(FlutterErrorDetails details) {
   print(details.stack.toString());
 }
 
-// void test_main() {
-//   runApp(
-//     MaterialApp(
-//       home: PushMessagingExample(),
-//     ),
-//   );
-// }
-
 void main() async {
-  // test_main();
-  // return;
   WidgetsFlutterBinding.ensureInitialized();
 
   FlutterError.onError = err;
-
-  // ca-app-pub-6003769087560175/8779826423
-  // FirebaseAdMob.instance.initialize(appId: FirebaseAdMob.testAppId);
-  // FirebaseAdMob.instance
-  //     .initialize(appId: 'ca-app-pub-6003769087560175~3910643124');
-
-// var secondaryApp = Firebase.app('SecondaryApp');
-// var analytics = FirebaseAnalytics.instanceFor(app: secondaryApp);
-//   var analytics = FirebaseAnalytics();
-//   var observer = FirebaseAnalyticsObserver(analytics: analytics);
-  // var id = (await SharedPreferences.getInstance()).getString('fa_userid');
-  // if (id == null) {
-  //   var ii = sha1.convert(utf8.encode(DateTime.now().toString()));
-  //   id = ii.toString();
-  //   (await SharedPreferences.getInstance()).setString('fa_userid', id);
-  // }
-  // await analytics.setUserId(id: id);
 
   await Settings.init();
   await Logger.init();

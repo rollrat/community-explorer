@@ -40,25 +40,6 @@ class _MainPageState extends State<MainPage> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
-  // FirebaseMessaging _firebaseMessaging;
-
-  // static MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
-  //   keywords: <String>['flutterio', 'beautiful apps'],
-  //   contentUrl: 'https://flutter.dev',
-  //   childDirected: false,
-  //   testDevices: <String>[],
-  // );
-
-  // BannerAd banner = BannerAd(
-  //   // adUnitId: BannerAd.testAdUnitId,
-  //   adUnitId: 'ca-app-pub-6003769087560175/8779826423',
-  //   size: AdSize.banner,
-  //   targetingInfo: targetingInfo,
-  //   // listener: (MobileAdEvent event) {
-  //   //   print("$event");
-  //   // },
-  // );
-
   @override
   void initState() {
     // TODO: implement initState
@@ -90,35 +71,6 @@ class _MainPageState extends State<MainPage> {
         _shouldReload = true;
       });
     });
-
-    // if (widget.isRootPage) {
-    //   _firebaseMessaging = FirebaseMessaging();
-    //   _firebaseMessaging.configure(
-    //     onMessage: (Map<String, dynamic> message) async {
-    //       print("onMessage: $message");
-    //       // _showItemDialog(message);
-    //     },
-    //     onLaunch: (Map<String, dynamic> message) async {
-    //       print("onLaunch: $message");
-    //       // _navigateToItemDetail(message);
-    //     },
-    //     onResume: (Map<String, dynamic> message) async {
-    //       print("onResume: $message");
-    //       // _navigateToItemDetail(message);
-    //     },
-    //   );
-    //   _firebaseMessaging.requestNotificationPermissions(
-    //       const IosNotificationSettings(
-    //           sound: true, badge: true, alert: true, provisional: true));
-    //   _firebaseMessaging.onIosSettingsRegistered
-    //       .listen((IosNotificationSettings settings) {
-    //     print("Settings registered: $settings");
-    //   });
-    //   _firebaseMessaging.getToken().then((String token) async {
-    //     assert(token != null);
-    //     await Hive.box('fcm').put('token', token);
-    //   });
-    // }
   }
 
   void _onRefresh() async {
