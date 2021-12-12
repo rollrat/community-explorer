@@ -81,10 +81,20 @@ class _RightPageState extends State<RightPage> with TickerProviderStateMixin {
                       ),
                       onTap: () async {
                         Settings.setThemeWhat(!Settings.themeWhat);
-                        DynamicTheme.of(context).setBrightness(
-                            Theme.of(context).brightness == Brightness.dark
-                                ? Brightness.light
-                                : Brightness.dark);
+                        DynamicTheme.of(context)
+                            .setBrightness(
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Brightness.light
+                                    : Brightness.dark)
+                            .then((value) {
+                          DynamicTheme.of(context).setThemeData(ThemeData(
+                            brightness:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Brightness.light
+                                    : Brightness.dark,
+                            backgroundColor: const Color(0xFF121212),
+                          ));
+                        });
                       },
                     ),
                   ),

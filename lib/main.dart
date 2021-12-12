@@ -91,6 +91,8 @@ void main() async {
         // primaryColor: Settings.majorColor,
         // primarySwatch: Settings.majorColor,
         brightness: brightness,
+        backgroundColor:
+            brightness == Brightness.dark ? const Color(0xFF121212) : null,
       ),
       themedWidgetBuilder: (context, theme) {
         return MaterialApp(
