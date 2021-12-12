@@ -30,7 +30,7 @@ class InfoPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(''),
-                      Text('Violet Community Explorer',
+                      Text('RollRat Community Explorer',
                           style: TextStyle(fontSize: 30)),
                       Text('1.1.0', style: TextStyle(fontSize: 30)),
                       Text(''),
