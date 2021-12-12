@@ -60,12 +60,12 @@ void main() async {
 // var analytics = FirebaseAnalytics.instanceFor(app: secondaryApp);
 //   var analytics = FirebaseAnalytics();
 //   var observer = FirebaseAnalyticsObserver(analytics: analytics);
-  var id = (await SharedPreferences.getInstance()).getString('fa_userid');
-  if (id == null) {
-    var ii = sha1.convert(utf8.encode(DateTime.now().toString()));
-    id = ii.toString();
-    (await SharedPreferences.getInstance()).setString('fa_userid', id);
-  }
+  // var id = (await SharedPreferences.getInstance()).getString('fa_userid');
+  // if (id == null) {
+  //   var ii = sha1.convert(utf8.encode(DateTime.now().toString()));
+  //   id = ii.toString();
+  //   (await SharedPreferences.getInstance()).setString('fa_userid', id);
+  // }
   // await analytics.setUserId(id: id);
 
   await Settings.init();
@@ -81,28 +81,7 @@ void main() async {
   await Hive.openBox('filter');
   await Hive.openBox('fcm');
 
-  var _random = Random();
-  var rr = _random.nextInt(10) + 2;
-  for (int i = 0; i < rr; i++) await getApplicationDocumentsDirectory();
-  var appdir = await getApplicationDocumentsDirectory();
-
-  if (Platform.isAndroid) {
-    if (!appdir.path.contains('/xyz.violet.communityexplorer2/')) return;
-  }
-
   var gg = await BoardManager.get('구독');
-
-  // if (DateTime.now().isAfter(DateTime(2020, 8, 31))) {
-  //   return;
-  // }
-
-  // if ((await http.get(
-  //             'https://raw.githubusercontent.com/rollrat/vce-limit/master/set'))
-  //         .body
-  //         .trim() !=
-  //     '0') {
-  //   return;
-  // }
 
   runApp(
     DynamicTheme(
