@@ -1,4 +1,4 @@
-package xyz.violet.communityexplorer
+package xyz.violet.communityexplorer2
 
 import io.flutter.embedding.android.FlutterActivity
 import androidx.annotation.NonNull
