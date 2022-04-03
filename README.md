@@ -2,7 +2,7 @@
  <img width="150px" src="https://github.com/rollrat/community-explorer/blob/master/images/playstore.png" align="center" alt="GitHub Readme Stats" />
  <h2 align="center">Community Explorer</h2>
   <p align="center">
-    구독형 커뮤니티 서비스
+    구독형 커뮤니티 서비스 
   </p>
   <p align="center">
     <b><a href="https://github.com/rollrat/community-explorer/wiki/Screenshots">Screenshots</a></b>
